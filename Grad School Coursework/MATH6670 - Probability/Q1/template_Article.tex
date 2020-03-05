@@ -1,0 +1,93 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+%opening
+\title{MATH 6670 Quiz 1}
+\author{Matthew Boler}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem 2.29}
+
+\subsection{Part A}
+
+The sample space $\Omega_a$ consists of all 2-permutations of the balls in the urn, so $| \Omega_a | = (n+m)_2$.
+The two options for drawing balls of the same color are drawing two white balls or two black balls, which we denote as events $W_a$ and $B_a$, respectively.
+As they are drawn without replacement, $| W_a | = (n)_2$ and $| B_a | = (m)_2$.
+Thus $P(W_a) = \frac{|W_a|}{|\Omega_a|}$ and $P(B_a) = \frac{|B_a|}{|\Omega_a|}$, and since $W_a$ and $B_a$ are disjoint, $P(W_a \cup B_a) = P(W_a) + P(B_a)$.
+
+\subsection{Part B}
+
+Since we now sample with replacement, $\Omega_b$ consists of all possible pairings of balls in the urn, including repetitions, so $|\Omega_b| = (n+m)^2$.
+We denote drawing a white ball, replacing it, and drawing another as the event $W_b$, and the equivalent with black balls $B_b$.
+Since the balls are sampled with replacement, $|W_b| = n^2$ and $|B_b| = m^2$ by the multiplication rule.
+Thus $P(W_b) = \frac{|W_b|}{|\Omega_b|}$ and $P(B_b) = \frac{|B_b|}{|\Omega_b|}$, and since $W_b$ and $B_b$ are disjoint, $P(W_b \cup B_b) = P(W_b) + P(B_b)$.
+
+\subsection{Part C}
+
+Since events $W$ and $B$ are disjoint, we'll prove that $P(W_a) < P(W_b)$ and $P(B_a) < P(B_b)$ separately, from which it will be clear that $P(W_a \cup B_a) < P(W_b \cup B_b)$.
+
+We will prove this by contradiction.
+We assume $P(W_a) \geq P(W_b)$.
+
+\begin{align*}
+	P(W_a) &\geq P(W_b) \\
+	\frac{(n)_2}{(n+m)_2} &\geq \frac{n^2}{(n+m)^2} \\
+	\frac{n}{n+m} \frac{n-1}{n+m-1} &\geq \frac{n}{n+m} \frac{n}{n+m}
+\end{align*}
+
+Since $n$ and $m$ are positive, we can divide both sides by $\frac{n}{n+m}$.
+
+\begin{align*}
+	\frac{n-1}{n+m-1} &\geq \frac{n}{n+m} \\
+	(n-1)(n+m) &\geq (n)(n+m-1) \\
+	n^2 + nm - n - m &\geq n^2 + nm - n
+\end{align*}
+
+We subtract $n^2 + nm - n$ from both sides to get
+
+\begin{align*}
+	-m \geq 0
+\end{align*}
+
+Since $m$ is positive, this contradicts our assumption, and thus $P(W_a) < P(W_b)$.
+The proof for $P(B_a) < P(B_b)$ is clear by the same method.
+
+We now have 
+
+\begin{align*}
+	P(W_a \cup B_a) &= P(W_a) + P(B_a) \\
+	P(W_b \cup B_b) &= P(W_b) + P(B_b) \\
+	P(W_a) &< P(W_b) \\
+	P(B_a) &< P(B_b)
+\end{align*}
+
+from which it is clear that $P(W_a \cup B_a) < P(W_b \cup B_b)$. 
+
+\section{Theoretical Exercise 2.18}
+
+We notate the set of sequences of order $n$ that begin with $t$ to be $t_n$, the set of sequences of order $n$ that begin with $h$ to be $h_n$, and $t(\circ)$ and $h(\circ)$ as functions that prepend $t$ or $h$ to all sequences in a set, i.e. $t_2 = (tt, th)$, and $h(t_2) = (htt, hth)$. Note that these functions do not change the size of the set they operate on. Also, note that $(t_n, h_n)$ is the set of all sequences of order $n$, so $|t_n, h_n| = f_n$.
+
+\begin{align*}
+	f_4 &= |( tttt, ttht, ttth, thtt, thth, httt, htht, htth )| \\
+	&= | ( t(ttt, tht, tth, htt, hth), h(ttt, tht, tth) ) | \\
+	&= | ( t( t_3, h_3 ), h(t_3) ) | \\
+	&= f_3 + |h(t_3)| \\
+	&= f_3 + |h(t(t_2, h_2))| \\
+	&= f_3 + f_2
+\end{align*}
+
+We can see that $f_n$ is equal to $2|t_{n-1}| + |h_{n-1}| = f_{n-1} + |t_{n-1}|$, and that $|t_{n-1}| = f_{n-2}$, so $f_n = f_{n-1} + f_{n-2}$.
+
+This can be explained as all valid sequences will remain valid if a $t$ is prepended, while only valid sequences beginning with a $t$ will remain valid if prepended by an $h$. 
+Then $f_n$ consists of all sequences in $t_{n-1}$ and $h_{n-1}$ prepended by a $t$ plus the sequences in $t_{n-1}$ prepended by an $h$.
+By our previous reasoning, $t_{n-1}$ is equal to all of the sequences in $f_{n-2}$ prepended by a $t$, so $f_n = f_{n-1} + f_{n-2}$.
+
+
+
+
+
+\end{document}

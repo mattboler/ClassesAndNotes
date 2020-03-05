@@ -1,0 +1,111 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Direct RGB-D Image Alignment: A Preliminary Report
+}
+
+\author{\IEEEauthorblockN{Matthew Boler}
+\IEEEauthorblockA{\textit{Dept. of Mechanical Engineering} \\
+\textit{Auburn University}\\
+Auburn, AL, USA \\
+meb0054@auburn.edu}
+}
+
+\maketitle
+
+\begin{abstract}
+This document presents an overview of the literature surrounding direct alignment of RGB-D images.
+Additionally, it details the fundamental algorithm chosen and the work remaining to complete the project.
+\end{abstract}
+
+\section{Introduction}
+
+In this work we examine the methods by which RGB-D information can be used to find the motion of the camera between successive measurements.
+The problem of aligning two RGB-D images can be seen as the intersection of point cloud registration and image registration.
+As both depth and intensity information is available, methods from both can be applied.
+Here we give an overview of these methods as well as a detailed explanation of the method we choose to apply for our project.
+Additionally, an overview of the work remaining on the project is given.
+
+\section{Direct Image Registration}
+Image registration is the task of finding the warp function between two images such that they most effectivly align.
+This forms the core problem of many computer vision research areas, most notably structure from motion (SFM) and visual odometry (VO).
+While a form of image registration relying on aligning a sparse set of keypoints, known as indirect registration or indirect VO, exists, in this work we focus on direct registration, also known as direct VO.
+
+Direct registration determines the camera pose through the minimization of a photometric error cost function.
+An example cost function from \cite{fleet_lsd-slam_2014} is shown below
+
+\begin{align}\label{cost_function}
+    J(\xi) = \sum_{\textbf{x} \in \Omega_{ref}} (I_{ref}(\textbf{x}) - I(\pi_{2d}(\textbf{x}, D_{ref}(\textbf{x}), \xi)))^2
+\end{align}
+where $\xi$ is the camera pose, $\textbf{x}$ is a given pixel, $I_i(\circ)$ is the intensity map for image $i$, $\pi_{2d}(\circ)$ is the two-dimensional projective warp function, $D_i(\circ)$ is the depth map for image $i$, and $\Omega_i$ is the set of pixels in image $i$.
+It is important to note that $D_{ref}$ must be initialized and optimized as more images become available, as it is not directly measured.
+This initialization process fails in degenerate motions such as pure rotation, preventing alignment from occuring.
+It should also be noted that this optimization process is performed in a coarse-to-fine scheme, where pyramids are calculated from the reference image, incoming image, and depth map such that each level is half the resolution of the next.
+When the optimization converges on one level, it moves to the next and repeats.
+
+Silveira et al. \cite{silveira_efficient_2008} appear to be the first to present direct image alignment in the context of VO or SLAM.
+In it, the relative pose $\xi$ between two cameras is found by minimizing a cost function similar to the one shown above.
+DTAM \cite{newcombe_dtam_2011}, considered the seminal work in direct VO, implements a modification of the strategy presented in \cite{silveira_efficient_2008} by implementing the alignment process and a depth map optimization process in parallel threads, enabling real-time operation.
+Direct VO works since, including \cite{engel_semi-dense_2013}, \cite{forster_svo_2014}, \cite{fleet_lsd-slam_2014}, and \cite{engel_direct_2018} improve on \cite{newcombe_dtam_2011} by increasing accuracy, computational efficiency, and robustness, but implement the same general strategy.
+
+\section{Point Cloud Registration}
+
+Point cloud registration is the task of finding the rigid body transform between two point clouds.
+The standard method, the iterative closest point algorithm \cite{besl_method_1992}, iteratively selects corresponding points in both clouds and finds the rigid body transform to minimize a cost function based on the distance between them.
+A simplified version of this function is shown below
+
+\begin{align}
+    J(\xi) = \sum_{\textbf{p,q} \in M} (\textbf{p} - T(\textbf{q}), \xi)^2
+\end{align}
+where $\xi$ is the scan pose, $M$ is the set of corresponding points $\textbf{p}$ and $\textbf{q}$ in clouds $\textbf{P}$ and $\textbf{Q}$, respectively, and $T(\circ)$ is the rigid body transform operator.
+
+
+\section{The Chosen Strategy}
+
+The use of an RGB-D camera offers to solve the key issues of both point cloud registration and direct image registration, in that we can use the depth images to immediately initialize depth maps and we can use the RGB images to avoid the instability inherent to aligning sparse point clouds.
+We intend to use the direct image registration method of pose calculation while replacing the depth map calculation and propagation step with the incoming depth image from the RGB-D sensor.
+
+The algorithm we intend to implement is as follows
+
+\subsection{Algorithm}
+Given a reference image $I_{ref}$, reference depth image $D_{ref}$, incoming image $I$, and incoming depth image $D$
+\begin{itemize}
+    \item[1] For $I_{ref}$, $I$, and $D_{ref}$, compute pyramids in steps of half-resolution.
+    \item[2] For each pyramid level $i$, minimize the cost function (\ref{cost_function}) over valid pixels $\Omega_{ref, i}$ until pose convergence
+    \item[3] Warp the previous depth map into the frame of the incoming camera, append $D$ to it, and repeat with next image  
+\end{itemize}
+
+\section{Project Progress}
+
+\subsection{Accomplished}
+
+The three-dimensional perspective warp function has been written.
+Additionally, a dataset with truth camera poses and camera calibration files has been sourced.
+
+\subsection{Work Remaining}
+
+The work remaining on the project includes
+
+\begin{itemize}
+    \item Pyramid calculation
+    \item Cost function calculation
+    \item Course-to-fine optimization process
+\end{itemize}
+
+
+
+\bibliography{IEEEabrv,mybib}
+\bibliographystyle{IEEEtran}
+
+\end{document}

@@ -1,0 +1,147 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+
+%opening
+\title{MATH 6670 Take Home Exam 1}
+\author{Matt Boler}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem 1: Ch3 P31}
+
+Some notation:
+
+\begin{itemize}
+	\item $c$ is the event that Ms. Aquina has cancer
+	\item $n$ is the event that Ms. Aquina does not get a call
+	\item $\beta$ is $P(c | n)$
+	\item $\alpha$ is $P(c)$
+\end{itemize}
+
+We can expand $\beta$ to
+
+\begin{align*}
+	\beta &= \frac{P(n|c)P(c)}{P(n)} \\
+	&= \frac{P(n|c)P(c)}{P(n|c)P(c) + P(n|c')P(c')} \\
+	&= \frac{P(c)}{P(c) + 0.5(1 - P(c))} \\
+	&= \frac{\alpha}{0.5 \alpha + 0.5} \\
+	&= \frac{2\alpha}{\alpha + 1}
+\end{align*}
+
+We can then show that $\beta > \alpha$ by
+
+\begin{align*}
+	\frac{2 \alpha}{\alpha + 1} &> \alpha \\
+	\frac{2}{\alpha + 1} &> 1 \\
+	2 &> \alpha + 1
+\end{align*}
+
+which is true as $\alpha < 1$.
+
+\section{Problem 2: Ch3 TE3}
+
+Some notation:
+
+\begin{itemize}
+	\item $e_i$ is the event that a family with $i$ children is randomly selected
+	\item $f$ is the event that a firstborn is chosen
+	\item $f_1$ is the event that a firstborn is chosen using method 1
+	\item $f_2$ is the event that a firstborn is chosen using method 2
+	\item $m$ is the total number of families (and then the total number of firstborns)
+	\item $C$ is the total number of children
+\end{itemize}
+
+Additionally, we have
+
+\begin{align*}
+	m &= \sum_{i=1}^{k}n_i \\
+	C &= \sum_{i=1}^{k}i n_i
+\end{align*}
+
+
+
+\subsection{Method 1}
+
+If we randomly select a family and then a child, we are conditioning our second selection on the family chosen.
+
+The probability that we select a given family size is
+
+\begin{align*}
+	P(e_i) = \frac{n_i}{m}
+\end{align*}
+
+\begin{align*}
+	P(f|e_i) = \frac{1}{i}
+\end{align*}
+
+By summing across all possible family sizes, we get
+
+\begin{align*}
+	P(f_1) &= \sum_{i=1}^{k}P(f | e_i) P (e_i) \\
+	&=\sum_{i=1}^{k} \frac{1}{i}\frac{n_i}{m} \\
+	&= \frac{1}{m} \sum_{i=1}^{k} \frac{n_i}{i}
+\end{align*}
+
+\subsection{Method 2}
+
+The probability that a firstborn is selected by randomly choosing a child is the number of firstborns over the total number of children, so
+
+\begin{align*}
+	P(f_2) &= \frac{m}{\sum_{i=1}^{k} i n_i}
+\end{align*}
+
+\subsection{Comparison}
+
+Multiplying each by $m \sum_{j=1}^{k} j n_j$ gives the inequality shown in the problem.
+
+\begin{align*}
+	\sum_{i=1}^{k}in_i \sum_{j=1}^{k} \frac{n_j}{j} \geq \sum_{i=1}^{k}n_i \sum_{j=1}^{k} n_j
+\end{align*}
+
+which can be proven via induction.
+For the base case of $k = 1$, we have
+
+\begin{align*}
+	\sum_{i=1}^{k}in_i \sum_{j=1}^{k} \frac{n_j}{j} &\geq \sum_{i=1}^{k}n_i \sum_{j=1}^{k} n_j \\
+	n_1^2 \geq n_1^2
+\end{align*}
+
+We then prove the inductive case, assuming this inequality holds for arbitrary $k$
+
+\begin{align*}
+	\sum_{i=1}^{k+1}in_i \sum_{j=1}^{k+1} \frac{n_j}{j} &\geq \sum_{i=1}^{k+1}n_i \sum_{j=1}^{k+1} n_j \\
+\end{align*}
+
+For the left hand side we have
+
+\begin{align*}
+	LHS &= \sum_{i=1}^{k+1}in_i \sum_{j=1}^{k+1} \frac{n_j}{j} \\
+	&= \sum_{i=1}^{k}in_i \sum_{j=1}^{k} \frac{n_j}{j} + n_{k+1}^2 + (\frac{k^2 + (k+1)^2}{k^2 + k})n_k n_{k+1}
+\end{align*}
+
+For the right hand side we have
+
+\begin{align*}
+	RHS &= \sum_{i=1}^{k+1}n_i \sum_{j=1}^{k+1} n_j \\
+	&= \sum_{i=1}^{k}n_i \sum_{j=1}^{k} n_j + n_{k+1}^2 + 2n_kn_{k+1}
+\end{align*}
+
+which we reassemble as
+
+\begin{align*}
+	\sum_{i=1}^{k}in_i \sum_{j=1}^{k} \frac{n_j}{j} + n_{k+1}^2 + (\frac{k^2 + (k+1)^2}{k^2 + k})n_k n_{k+1} &\geq \sum_{i=1}^{k}n_i \sum_{j=1}^{k} n_j + n_{k+1}^2 + 2n_kn_{k+1}
+\end{align*}
+
+The sums make up our assumed case, so we can subtract them without changing the sign of the inequality.
+
+\begin{align*}
+	n_{k+1}^2 + (\frac{k^2 + (k+1)^2}{k^2 + k})n_k n_{k+1} &\geq n_{k+1}^2 + 2n_kn_{k+1} \\
+	(\frac{k^2 + (k+1)^2}{k^2 + k}) &\geq 2 \\
+	2k^2 + 2k + 1 &\geq 2k^2 + 2k
+\end{align*}
+
+which is true.
+
+\end{document}

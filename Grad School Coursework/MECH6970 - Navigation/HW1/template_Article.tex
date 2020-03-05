@@ -1,0 +1,349 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{.}
+
+%opening
+\title{MECH6970 Fundamentals of Nav. and Guidance \\ Homework 1}
+\author{Matt Boler}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Problem 1}
+
+\subsection{Part A}
+
+The satellite's geodetic coordinates are 
+
+\begin{align*}
+	\overrightarrow{P}^g &= \begin{bmatrix}
+	19.3602 \\
+	-99.0719 \\
+	2.1986 \times 10^7
+	\end{bmatrix}
+\end{align*}
+
+\subsection{Part B}
+
+The satellite is located over Mexico City.
+
+\subsection{Part C}
+
+The satellite's speed in $km/s$ is
+
+\begin{align*}
+	s &= || \overrightarrow{V}^e ||_2 \times 10^{-3} \\
+	&= 3.9999 \frac{km}{s}
+\end{align*}
+
+\subsection{Part D}
+
+The transformation matrix is
+
+\begin{align*}
+	^{ecef}\overrightarrow{\mathbf{C}}^{ned} &= \begin{bmatrix}
+	cos(\alpha) & 0 & sin(\alpha) \\
+	0 & 1 & 0 \\
+	-sin(\alpha) & 0 & cos(\alpha)
+	\end{bmatrix} \begin{bmatrix}
+	cos(\lambda) & sin(\lambda) & 0 \\
+	-sin(\lambda) & cos(\lambda) & 0 \\
+	0 & 0 & 1
+	\end{bmatrix}
+\end{align*}
+
+\begin{align*}
+	\overrightarrow{V}^{ned} &= ^{ecef}\overrightarrow{\mathbf{C}}^{ned} \overrightarrow{V}^{ecef} \\
+	&= \begin{bmatrix}
+	2.8284 \\
+	2.8284 \\
+	0.0038
+	\end{bmatrix} \times 10^3 \frac{m}{s}
+\end{align*}
+
+\subsection{Part E}
+
+To find the az/el, we convert to ECEF and find the vector between the observer and satellite, and then convert that vector to a local NED frame to get our az/el
+
+\begin{align*}
+	\overrightarrow{P}^{ecef}_{obsv} &= \begin{bmatrix}
+	1.2733 \\ -6.2526 \\-0.0156
+	\end{bmatrix} \times 10^6 \\
+	\overrightarrow{P}^{ecef}_{rel} &= \overrightarrow{P}^{ecef}_{obsv} - \overrightarrow{P}^{ecef}_{sat} \\
+	\overrightarrow{P}^{ned}_{rel} &= ^{ecef}\overrightarrow{\mathbf{C}}^{ned}_{obsv} \overrightarrow{P}^{ecef}_{rel} \\
+	&= \begin{bmatrix}
+	0.9491 \\
+	-0.9408 \\
+	-1.8650
+	\end{bmatrix} \times 10^7
+\end{align*}
+
+Our az/el is then
+
+\begin{align*}
+	\psi &= tan^{-1}(\frac{\Delta_y}{\Delta_x}) \\
+	&= -44.7494deg \\
+	\gamma &= tan^{-1}( \frac{-\Delta_z}{sqrt( \Delta_x^2 + \Delta_y^2 )} ) \\
+	&= 54.3760deg
+\end{align*}
+
+\section{Problem 2}
+
+In addition to the assumptions made by the problem, I assume a nonrotating earth.
+We consider two paths: parallel to the equator and crossing over the north pole.
+
+\subsection{Parallel to the Equator}
+
+The distance travelled is an arc across a sphere of radius $R_{earth} + alt$.
+We find the arc length via
+
+\begin{align*}
+	L_1 &= \frac{\Delta_{lon}}{360} * circumference \\
+	&= \frac{180}{360} * cos(lat) * (R_{earth} + alt) * 2 * \pi \\
+	&= 1.4191 \times 10^7
+\end{align*}
+
+We divide this by speed to get the time of flight
+
+\begin{align*}
+	t_1 &= \frac{L_1}{s \times 10^3} \\
+	&= 17.7386 hr
+\end{align*}
+
+\subsection{Over the North Pole}
+
+\begin{align*}
+	L_2 &= \frac{\Delta_{lat}}{360} * circumference \\
+	&= \frac{90}{360} * R_{earth} * 2 * \pi \\
+	&= 1.0034 \times 10^7
+\end{align*}
+
+\begin{align*}
+	t_2 &= \frac{L_2}{s \times 10^3} \\
+	&= 12.5431hr
+\end{align*}
+
+So flying directly over the north pole is the fastest route.
+
+\section{Problem 3}
+
+If the drone is always flying at 5 degrees off of North, then it will circle the North pole for eternity.
+Otherwise, if it just starts at an error of 5 degrees then it will complete one full circumnavigation of the earth before returning to its origin.
+We show this by
+
+\begin{align*}
+	t &= \frac{L}{v} \\
+	&= \frac{2 * \pi * R_{earth}}{v_{drone}} \\
+	&= 400.7502 hrs
+\end{align*}
+
+\subsection{Textbook Problem 1}
+
+\subsection{Degrees}
+
+If 1 minute of latitude is equivalent to 1852 meters, then the table below shows accuracies for varying numbers of significant digits
+
+\begin{center}
+	\begin{tabular}{|c|c|} \hline
+		Decimal Places & Accuracy in Meters \\ \hline
+		0 & 1852 \\
+		1 & 185.2 \\
+		2 & 18.52 \\
+		3 & 1.852 \\
+		4 & 0.1852 \\
+		5 & 0.01852 \\
+		6 & 0.001852 \\ \hline
+	\end{tabular}
+\end{center}
+
+6 decimal places are needed.
+
+\subsection{Arc-Seconds}
+% Latitude: deg min sec
+% min = 1/60 min
+% sec = 1/3600 min
+
+\begin{center}
+	\begin{tabular}{|c|c|} \hline
+		Decimal Places & Accuracy in Meters \\ \hline
+		0 & 0.514 \\
+		1 & 0.0514 \\
+		2 & 0.00514 \\ \hline
+	\end{tabular}
+\end{center}
+
+Two decimal places are needed in the arc-seconds field for a sub 1cm solution.
+
+\section{Textbook Problem 2}
+
+Assuming a spherical earth with a radius of 6371km, the circumference of said earth is 
+
+\begin{align*}
+	c_e &= 2 * \pi * 6371 \\
+	&= 40,030km
+\end{align*}
+
+Moving at 885 km/h for 8h results in a total distance of 
+
+\begin{align*}
+	d &= s \times t \\
+	&= 885 * 8 \\
+	&= 7,080km
+\end{align*}
+
+which is $0.1769\%$ of the circumference of the earth, and thus approximately 63.67 degrees of motion on a spherical earth.
+Since we travel at a heading of $45$ degrees off North, this motion is split into 
+
+\begin{align*}
+	d_N &= 63.67 \times sin(45) \\
+	&= 45.0215 deg \\
+	d_E &= 63.67 \times cos(45) \\
+	&= 45.0215 deg
+\end{align*}
+
+Which places us at approximately 90 degrees North, 75 degrees West at an altitude of 10km.
+In other words, we are at the North Pole.
+
+\section{Textbook Problem 3}
+
+\subsection{Part A}
+
+We use the formula 
+
+\begin{align*}
+	\dot{\rho} &= c \times (1 - \frac{f_{trans} + f_{shift}}{f_{trans}})
+\end{align*}
+
+to find our range rates
+
+\begin{align*}
+	\dot{\rho}_0 &= 99.5037 m/s \\
+	\dot{\rho}_1 &= 99.5133 m/s \\
+	\dot{\rho}_2 &= 99.5229 m/s
+\end{align*}
+
+\subsection{Part B}
+
+Our linear equations are
+
+\begin{align*}
+	x_1 &= x_0 + v_x \times \Delta_t \\
+	x_2 &= x_0 + v_x \times 2*\Delta_t
+\end{align*}
+
+\subsection{Part C}
+
+Our nonlinear equations are
+
+\begin{align*}
+	\theta &= tan^{-1}(\frac{y_0}{x_0 + \dot{x}\Delta_t}) \\
+	\dot{x} &= \dot{\rho}cos(\theta)
+\end{align*}
+
+
+\section{Problem 4}
+
+\subsection{Part A}
+
+Given $d_1 = 550m = \rho_1 - b$, $d_2 = 500m = \rho_2 - b$, we find the true ranges and bias as such
+
+\begin{align*}
+	1000 &= \rho_1 + \rho_2 \\
+	&=  d_1 + b + d_2 + b \\
+	&= 550 + b + 500 + b \\
+	&= 1050 + 2b \\
+\end{align*}
+
+so $b = -25m$. 
+Thus the true position of the observer is $525m$ from PL1.
+
+\subsection{Part B}
+
+Given $d_1 = 400m = \rho_1 - b$, $d_2 = 1400m = \rho_2 - b$, we find the true ranges and bias as such
+
+\begin{align*}
+1000 &= \rho_1 + \rho_2 \\
+&=  d_1 + b + d_2 + b \\
+&= 400 + b + 1400 + b \\
+&= 1400 + 2b \\
+\end{align*}
+
+so $b = -400m$. 
+Thus the true position of the observer is $0m$ from PL1.
+
+\section{Textbook Problem 5}
+
+\subsection{Part A}
+
+Given that our only measurement is our odometer measurement, our estimate of position is our odometer reading of 56km.
+
+\subsection{Part B}
+
+Since the bus leaves on the hour and moves at 3km/min, it should have traveled
+
+\begin{align*}
+	d &= v \times t \\
+	&= 21 * 3 \\
+	&= 63km
+\end{align*}
+
+so according to our timing we are 63km from town A.
+
+\subsection{Part C}
+
+Our two equations for position are
+
+\begin{align*}
+	m_{odom} &= d + e_{odom} \\
+	m_{red bus} &= s_{red bus} \times (t + b_{clock})
+\end{align*}
+
+\subsection{Part D}
+
+Since the bus leaves on the hour and moves at 2.5km/min, our new navigation equations are
+
+\begin{align*}
+	m_{odom} &= d + e_{odom} \\
+	m_{red bus} &= s_{red bus} \times (t_{red bus} + b_{clock}) \\
+	120 - m_{blue bus} &=  s_{blue bus} \times (t_{blue bus} + b_{clock})
+\end{align*}
+
+We can solve for our clock bias with
+
+\begin{align*}
+	120 &= d_A + d_B \\
+	&= m_{red bus} - s_{red bus}b + m_{blue bus} - s_{blue bus}b \\
+	&= 63km - 3b + 62.5 - 2.5b \\
+	120 &= 125.5 - 5.5b
+\end{align*}
+
+so our clock bias is 1min.
+
+Our position is then 
+
+\begin{align*}
+	d &= s_{red bus} \times t_{red bus} \\
+	&= m_{red bus} - s_{red bus}b \\
+	&= 60km
+\end{align*}
+
+\subsection{Part E}
+
+Your solution would be the same, as the added clock biases would cancel out.
+
+\subsection{Part F}
+
+\subsection{L1}
+
+You can't estimate either with just the L1 cabs, because you have no way of differentiating the cabs and thus can't tell when the cab left town A.
+
+\subsection{L1 and L2}
+
+With the L1 and L2 cabs, you still can't calculate either because you have no way to know how long each cab has been driving.
+You can figure out how far you are between whole km intervals from the offset in L1 and L2 cabs arriving, but once you reach a new km the offsets wrap around.
+
+\end{document}

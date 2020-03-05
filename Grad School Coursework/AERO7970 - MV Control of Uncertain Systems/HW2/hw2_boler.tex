@@ -1,0 +1,261 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{.}
+
+%opening
+\title{AERO 7970 - Multivariable Control of Uncertain Systems \\ Homework 2}
+\author{Matt Boler}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem 1}
+
+Given the system:
+
+\begin{align*}
+	\dot{x} &= \begin{bmatrix}
+	0 & 1 & 0 & 0 & 0 \\
+	0 & 0 & 1 & 0 & 0 \\
+	0 & 0 & 0 & 1 & 0 \\
+	0 & 0 & 0 & 0 & 1 \\
+	0 & 0 & 0 & 0 & 0
+	\end{bmatrix}
+	x + \begin{bmatrix}
+	0 \\
+	0 \\
+	0 \\
+	0 \\
+	1
+	\end{bmatrix}u
+	\\
+	y &= Cx
+\end{align*}
+
+\begin{itemize}
+	\item Check the controllability of the system
+	\item Check the stability of the system
+	\item What is the response to initial conditions?
+\end{itemize}
+
+\subsection{Solution}
+
+\subsubsection{Controllability}
+
+We form the controllability matrix $\mathbf{C}$ using Matlab's $ctrb(A, B)$ command.
+The $\mathbf{A}$ matrix has $dim(\mathbf{A})=5$, and the $\mathbf{C}$ matrix has $rank(\mathbf{C}=5$.
+Therefore the system is controllable.
+
+\subsubsection{Stability}
+From the $\mathbf{A}$ matrix being in Jordan form, we can see that $\lambda(\mathbf{A}) = 0 \forall \lambda$.
+Therefore the system is marginally stable.
+
+\subsubsection{Response to Initial Conditions}
+The homogeneous response of the system is denoted by:
+\begin{align*}
+	\Phi(t) &= expm(\mathbf{A}t)x_0 = \begin{bmatrix}
+	1 & t & \frac{t^2}{2} & \frac{t^3}{6} & \frac{t^4}{24} \\
+	0 & 1 & t & \frac{t^2}{2} & \frac{t^3}{6} \\
+	0 & 0 & 1 & t & \frac{t^2}{2} \\
+	0 & 0 & 0 & 1 & t \\
+	0 & 0 & 0 & 0 & 1 \\
+	\end{bmatrix}x_0
+\end{align*}
+
+As we can see, the system is unstable to nonzero initial conditions.
+\section{Problem 2}
+
+Given the system:
+
+\begin{align*}
+\dot{x} &= \begin{bmatrix}
+0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0 & 0
+\end{bmatrix}
+x + \mathbf{B}u
+\\
+y &= \begin{bmatrix}
+1 & 0 & 0 & 0 & 0
+\end{bmatrix}x
+\end{align*}
+
+\begin{itemize}
+	\item Check the observability of the system
+	\item Check the stability of the system
+	\item What is the response to initial conditions?
+\end{itemize}
+
+\subsection{Solution}
+
+\subsubsection{Observability}
+We form the observability matrix $\mathbf{O}$ using Matlab's $obsv(A, C)$ command.
+The $\mathbf{A}$ matrix has $dim(\mathbf{A})=5$, and the $\mathbf{O}$ matrix has $rank(\mathbf{O}=5$.
+Therefore the system is observable.
+
+\subsubsection{Stability}
+As $\mathbf{A}$ is the same as in Problem 1, the same answer applies.
+
+\subsubsection{Response to Initial Conditions}
+As $\mathbf{A}$ is the same as in Problem 1, the same answer applies.
+
+\section{Problem 3}
+
+Given the system:
+
+\begin{align*}
+	\dot{x} = \begin{bmatrix}
+	\dot{r} \\
+	\ddot{r} \\
+	\dot{\theta} \\
+	\ddot{\theta} \\
+	\dot{\phi} \\
+	\ddot{\phi}
+	\end{bmatrix} = 
+	\begin{bmatrix}
+	0 & 1 & 0 & 0 & 0 & 0 \\
+	3\omega_0^2 & 0 & 0 & 2\omega_0r_0 & 0 & 0 \\
+	0 & 0 & 0 & 1 & 0 & 0 \\
+	0 & \frac{-2\omega_0 }{r_0} & 0 & 0 & 0 & 0	\\
+	0 & 0 & 0 & 0 & 0 & 1 \\
+	0 & 0 & 0 & 0 & -\omega_0^2 & 0
+	\end{bmatrix}
+	\begin{bmatrix}
+	r \\
+	\dot{r} \\
+	\theta \\
+	\dot{\theta} \\
+	\phi \\
+	\dot{\phi}
+	\end{bmatrix} + 
+	\begin{bmatrix}
+	0 & 0 & 0 \\
+	\frac{1}{m} & 0 & 0 \\
+	0 & 0 & 0 \\
+	0 & \frac{1}{mr_0} & 0 \\
+	0 & 0 & 0 \\
+	0 & 0 & \frac{1}{mr_0}
+	\end{bmatrix}
+	\begin{bmatrix}
+	u_r \\
+	u_{\theta} \\
+	u_{\phi}
+	\end{bmatrix}
+\end{align*}
+
+\begin{itemize}
+	\item Determine the stability, controllability, and observability properties
+	\item Find the following transfer functions:
+	\begin{align*}
+		\frac{r(s)}{u_r(s)}, \frac{\phi(s)}{u_{\phi}(s)}, \frac{\theta(s)}{u_{\theta}(s)}
+	\end{align*}
+\end{itemize}
+
+\subsection{Solution}
+
+\subsubsection{Stability, Controllability, Observability}
+
+The system has six eigenvalues, all on the imaginary axis.
+Thus the system is marginally stable.
+
+The system is 6-dimensional, and both the controllability and observability matrices are rank 6.
+Thus the system is both controllable and observable.
+
+\subsubsection{Transfer Functions}
+
+We split the $\mathbf{A}$ matrix into the differential equations it represents:
+\begin{align*}
+	\dot{r} &= \dot{r} \\
+	\ddot{r} &= 2\omega_0^2r + 2\omega_0r_0 \dot{\theta} + \frac{1}{m}u_r \\
+	\dot{\theta} &= \dot{\theta} \\
+	\ddot{\theta} &= \frac{-2\omega_0}{r_0} \dot{r} + \frac{1}{mr_0} u_{\theta} \\
+	\dot{\phi} &= \dot{\phi} \\
+	\ddot{\phi} &= -\omega_0^2\phi + \frac{1}{mr_0}u_{\phi}
+\end{align*}
+
+We solve for $\frac{\phi(s)}{u_{\phi}(s)}$ by taking the inverse laplace of the $\ddot{\phi}$ equation.
+Rearranging gives:
+
+\begin{align*}
+	\frac{\phi(s)}{u_{\phi}(s)} = \frac{\frac{1}{mr_0}}{s^2 + \omega_0^2} 
+\end{align*}
+
+As the differential equation for $\ddot{r}$ includes a $\dot{\theta}$ term, we solve for $\theta(s)$ in terms of $r(s)$ and remove the input $u_{\theta}(s)$.
+Rearranging gives:
+\begin{align*}
+	\frac{r(s)}{u_r(s)} &= \frac{\frac{1}{m}}{s^2 + \omega_0^2}
+\end{align*}
+
+Similarly, the differential equation for $\ddot{\theta}$ includes an $\dot{r}$ term.
+Following the same process and eliminating $u_r(s)$ gives:
+
+\begin{align*}
+	\frac{\theta(s)}{u_{\theta}(s)} &= \frac{s^2 - 3\omega_0^2}{mr_0s^2 (s^2 + \omega_0^2)}
+\end{align*}
+
+\section{Problem 4}
+
+Given the system:
+
+\begin{align*}
+	G(s) = \frac{s+2}{s^2 + 7s + 12}
+\end{align*}
+
+Show that $z=-2$ is a transmission zero using the generalized eigenvalue problem.
+
+\subsection{Solution}
+
+To show that $z=-2$ is a transmission zero, it must solve
+
+\begin{align*}
+	\begin{bmatrix}
+	z\mathbf{I} - \mathbf{A} & -\mathbf{B} \\
+	\mathbf{C} & \mathbf{D}
+	\end{bmatrix}
+	\begin{bmatrix}
+	\mathbf{x}_0 \\
+	u_0
+	\end{bmatrix} = 0
+\end{align*}
+
+for the state space system:
+
+\begin{align*}
+	\mathbf{A} &= \begin{bmatrix}
+	-7 & -12 \\
+	1 & 0
+	\end{bmatrix} \\
+	\mathbf{B} &= \begin{bmatrix}
+	1 \\
+	0
+	\end{bmatrix}\\
+	\mathbf{C} &= \begin{bmatrix}
+	1 & 2
+	\end{bmatrix} \\
+	\mathbf{D} &= 0
+\end{align*}
+
+The constructed matrix system is then:
+
+\begin{align*}
+	\begin{bmatrix}
+	5 & 12 & -1 \\
+	-1 & -2 & 0 \\
+	1 & 2 & 0
+	\end{bmatrix}
+	\begin{bmatrix}
+	\mathbf{x}_0 \\
+	u_0
+	\end{bmatrix} = 0
+\end{align*}
+
+Clearly, rows 2 and 3 of this matrix are not linearly dependent, and as such the system has lost rank.
+Thus $z=-2$ is a transmission zero.
+Solving the matrix system for $\mathbf{x}_0$ and $u_0$ gives $x_1 = -2x_2$ and $u_0 = 2x_2$.
+
+
+\end{document}

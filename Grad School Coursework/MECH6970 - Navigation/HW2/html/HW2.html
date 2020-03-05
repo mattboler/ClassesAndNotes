@@ -1,0 +1,7426 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW2</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-09-24"><meta name="DC.source" content="HW2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Problem 1</a></li><li><a href="#3">Problem 2</a></li><li><a href="#4">Problem 3</a></li><li><a href="#5">Bonus</a></li></ul></div><pre class="codeinput">clc; clear <span class="string">all</span>; close <span class="string">all</span>;
+
+<span class="comment">%{
+</span><span class="comment">Matt Boler
+</span><span class="comment">Fundamentals of Nav and Guidance
+</span><span class="comment">HW2
+</span><span class="comment">%}</span>
+</pre><h2 id="2">Problem 1</h2><pre class="codeinput">p1_image = rgb2gray(imread(<span class="string">'test-image.jpg'</span>));
+thresholds = linspace(500, 5000);
+detections = zeros(size(thresholds));
+
+<span class="keyword">for</span> i = 1:size(thresholds,2)
+    I = detectSURFFeatures(p1_image, <span class="string">'MetricThreshold'</span>, thresholds(i));
+    detections(1,i) = size(I,1);
+    clear <span class="string">I</span>;
+<span class="keyword">end</span>
+
+figure(1)
+plot(thresholds, detections);
+title(<span class="string">"Number of Features Detected vs Metric Threshold"</span>);
+xlabel(<span class="string">"Metric Threshold"</span>);
+ylabel(<span class="string">"Features Detected"</span>);
+</pre><img vspace="5" hspace="5" src="HW2_01.png" alt=""> <h2 id="3">Problem 2</h2><pre class="codeinput">p2_im1 = rgb2gray(imread(<span class="string">'Image_t0.jpg'</span>));
+p2_im2 = rgb2gray(imread(<span class="string">'Image_t1.jpg'</span>));
+
+pts1 = detectSURFFeatures(p2_im1);
+[f1, vpts1] = extractFeatures(p2_im1, pts1);
+
+pts2 = detectSURFFeatures(p2_im2);
+[f2, vpts2] = extractFeatures(p2_im2, pts2);
+
+thresholds = linspace(1, 50, 1000);
+ratios = linspace(0.01,1);
+
+matches_1 = zeros(size(thresholds));
+
+<span class="keyword">for</span> i = 1:size(thresholds, 2)
+    idxPairs = matchFeatures(f1, f2, <span class="string">'Unique'</span>, true, <span class="string">'MatchThreshold'</span>, thresholds(i));
+    matches_1(1,i) = size(vpts1(idxPairs(:,1)), 1);
+<span class="keyword">end</span>
+
+figure(2)
+plot(thresholds, matches_1);
+title(<span class="string">"Number of Features Matched vs Match Threshold"</span>);
+xlabel(<span class="string">"Match Threshold"</span>);
+ylabel(<span class="string">"Features Matched"</span>);
+
+matches_2 = zeros(size(matches_1));
+
+<span class="keyword">for</span> i = 1:size(ratios, 2)
+   idxPairs = matchFeatures(f1, f2, <span class="string">'Unique'</span>, true, <span class="string">'MaxRatio'</span>, ratios(i));
+   matches_2(1,i) = size(vpts1(idxPairs(:,1)),1);
+<span class="keyword">end</span>
+
+figure(3)
+plot(thresholds, matches_2);
+title(<span class="string">"Number of Features Matched vs Max Ratio"</span>);
+xlabel(<span class="string">"Max Ratio"</span>);
+ylabel(<span class="string">"Features Matched"</span>);
+</pre><img vspace="5" hspace="5" src="HW2_02.png" alt=""> <img vspace="5" hspace="5" src="HW2_03.png" alt=""> <h2 id="4">Problem 3</h2><pre class="codeinput">p3_im1 = rgb2gray(imread(<span class="string">'reference_map.jpg'</span>));
+p3_im2 = rgb2gray(imread(<span class="string">'img_132.png'</span>));
+
+max_features_matched = -1;
+best_det_thresh = -1;
+best_match_thresh = -1;
+best_match_ratio = -1;
+
+det_thresholds = linspace(500, 2000, 10);
+match_thresholds = linspace(1, 10, 10);
+match_ratios = linspace(0.01,1, 10);
+
+<span class="keyword">for</span> i = 1:size(det_thresholds, 2)
+    det_thresh = det_thresholds(i);
+    pts1 = detectSURFFeatures(p3_im1, <span class="string">'MetricThreshold'</span>, det_thresh);
+    [f1, vpts1] = extractFeatures(p3_im1, pts1);
+
+    pts2 = detectSURFFeatures(p3_im2, <span class="string">'MetricThreshold'</span>, det_thresh);
+    [f2, vpts2] = extractFeatures(p3_im2, pts2);
+
+    <span class="keyword">for</span> j = 1:size(match_thresholds, 2)
+        match_thresh = match_thresholds(j);
+        <span class="keyword">for</span> k = 1:size(match_ratios, 2)
+            match_ratio = match_ratios(k);
+
+            <span class="comment">% Test parameters</span>
+            idxPairs = matchFeatures(f1, f2, <span class="string">'Unique'</span>, true, <span class="string">'MatchThreshold'</span>, match_thresh, <span class="string">'MaxRatio'</span>, match_ratio);
+            temp_matches = size(vpts1(idxPairs(:,1)), 1);
+
+            <span class="keyword">if</span> temp_matches &gt; max_features_matched
+               max_features_matched  = temp_matches;
+               best_det_thresh = det_thresh;
+               best_match_thresh = match_thresh;
+               best_match_ratio = match_ratio;
+            <span class="keyword">end</span>
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+disp(<span class="string">"Best Detection Threshold: "</span>)
+disp(best_det_thresh)
+disp(<span class="string">"Best Matching Threshold: "</span>)
+disp(best_match_thresh)
+disp(<span class="string">"Best Matching Ratio: "</span>)
+disp(best_match_ratio)
+disp(<span class="string">"Features Matched: "</span>)
+disp(max_features_matched)
+</pre><pre class="codeoutput">Best Detection Threshold: 
+   500
+
+Best Matching Threshold: 
+     4
+
+Best Matching Ratio: 
+     1
+
+Features Matched: 
+   472
+
+</pre><h2 id="5">Bonus</h2><pre class="codeinput">p3_im1 = rgb2gray(imread(<span class="string">'Image_t0.jpg'</span>));
+p3_im2 = rgb2gray(imread(<span class="string">'Image_t1.jpg'</span>));
+
+max_features_matched = -1;
+best_det_thresh = -1;
+best_match_thresh = -1;
+best_match_ratio = -1;
+
+det_thresholds = linspace(500, 2000, 10);
+match_thresholds = linspace(1, 10, 10);
+match_ratios = linspace(0.01,1, 10);
+
+<span class="keyword">for</span> i = 1:size(det_thresholds, 2)
+    det_thresh = det_thresholds(i);
+    pts1 = detectSURFFeatures(p3_im1, <span class="string">'MetricThreshold'</span>, det_thresh);
+    [f1, vpts1] = extractFeatures(p3_im1, pts1);
+
+    pts2 = detectSURFFeatures(p3_im2, <span class="string">'MetricThreshold'</span>, det_thresh);
+    [f2, vpts2] = extractFeatures(p3_im2, pts2);
+
+    <span class="keyword">for</span> j = 1:size(match_thresholds, 2)
+        match_thresh = match_thresholds(j);
+        <span class="keyword">for</span> k = 1:size(match_ratios, 2)
+            match_ratio = match_ratios(k);
+
+            <span class="comment">% Test parameters</span>
+            [idxPairs, metric] = matchFeatures(f1, f2, <span class="string">'Unique'</span>, true, <span class="string">'MatchThreshold'</span>, match_thresh, <span class="string">'MaxRatio'</span>, match_ratio);
+            temp_matches = size(vpts1(idxPairs(:,1)), 1);
+            temp_avg_metric = sum(metric) / temp_matches
+
+            <span class="keyword">if</span> temp_matches &gt; max_features_matched
+               max_features_matched  = temp_matches;
+               best_det_thresh = det_thresh;
+               best_match_thresh = match_thresh;
+               best_match_ratio = match_ratio;
+            <span class="keyword">end</span>
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+disp(<span class="string">"BONUS"</span>)
+
+disp(<span class="string">"Best Detection Threshold: "</span>)
+disp(best_det_thresh)
+disp(<span class="string">"Best Matching Threshold: "</span>)
+disp(best_match_thresh)
+disp(<span class="string">"Best Matching Ratio: "</span>)
+disp(best_match_ratio)
+disp(<span class="string">"Features Matched: "</span>)
+disp(max_features_matched)
+</pre><pre class="codeoutput">
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0127
+
+
+temp_avg_metric =
+
+  single
+
+    0.0145
+
+
+temp_avg_metric =
+
+  single
+
+    0.0159
+
+
+temp_avg_metric =
+
+  single
+
+    0.0177
+
+
+temp_avg_metric =
+
+  single
+
+    0.0202
+
+
+temp_avg_metric =
+
+  single
+
+    0.0214
+
+
+temp_avg_metric =
+
+  single
+
+    0.0222
+
+
+temp_avg_metric =
+
+  single
+
+    0.0224
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0127
+
+
+temp_avg_metric =
+
+  single
+
+    0.0158
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0253
+
+
+temp_avg_metric =
+
+  single
+
+    0.0308
+
+
+temp_avg_metric =
+
+  single
+
+    0.0351
+
+
+temp_avg_metric =
+
+  single
+
+    0.0391
+
+
+temp_avg_metric =
+
+  single
+
+    0.0417
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0127
+
+
+temp_avg_metric =
+
+  single
+
+    0.0158
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0253
+
+
+temp_avg_metric =
+
+  single
+
+    0.0314
+
+
+temp_avg_metric =
+
+  single
+
+    0.0361
+
+
+temp_avg_metric =
+
+  single
+
+    0.0428
+
+
+temp_avg_metric =
+
+  single
+
+    0.0460
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0127
+
+
+temp_avg_metric =
+
+  single
+
+    0.0158
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0253
+
+
+temp_avg_metric =
+
+  single
+
+    0.0323
+
+
+temp_avg_metric =
+
+  single
+
+    0.0376
+
+
+temp_avg_metric =
+
+  single
+
+    0.0438
+
+
+temp_avg_metric =
+
+  single
+
+    0.0469
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0127
+
+
+temp_avg_metric =
+
+  single
+
+    0.0158
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0253
+
+
+temp_avg_metric =
+
+  single
+
+    0.0323
+
+
+temp_avg_metric =
+
+  single
+
+    0.0376
+
+
+temp_avg_metric =
+
+  single
+
+    0.0438
+
+
+temp_avg_metric =
+
+  single
+
+    0.0469
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0127
+
+
+temp_avg_metric =
+
+  single
+
+    0.0158
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0253
+
+
+temp_avg_metric =
+
+  single
+
+    0.0323
+
+
+temp_avg_metric =
+
+  single
+
+    0.0376
+
+
+temp_avg_metric =
+
+  single
+
+    0.0438
+
+
+temp_avg_metric =
+
+  single
+
+    0.0469
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0127
+
+
+temp_avg_metric =
+
+  single
+
+    0.0158
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0253
+
+
+temp_avg_metric =
+
+  single
+
+    0.0323
+
+
+temp_avg_metric =
+
+  single
+
+    0.0376
+
+
+temp_avg_metric =
+
+  single
+
+    0.0438
+
+
+temp_avg_metric =
+
+  single
+
+    0.0469
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0127
+
+
+temp_avg_metric =
+
+  single
+
+    0.0158
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0253
+
+
+temp_avg_metric =
+
+  single
+
+    0.0323
+
+
+temp_avg_metric =
+
+  single
+
+    0.0376
+
+
+temp_avg_metric =
+
+  single
+
+    0.0438
+
+
+temp_avg_metric =
+
+  single
+
+    0.0469
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0127
+
+
+temp_avg_metric =
+
+  single
+
+    0.0158
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0253
+
+
+temp_avg_metric =
+
+  single
+
+    0.0323
+
+
+temp_avg_metric =
+
+  single
+
+    0.0376
+
+
+temp_avg_metric =
+
+  single
+
+    0.0438
+
+
+temp_avg_metric =
+
+  single
+
+    0.0469
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0127
+
+
+temp_avg_metric =
+
+  single
+
+    0.0158
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0253
+
+
+temp_avg_metric =
+
+  single
+
+    0.0323
+
+
+temp_avg_metric =
+
+  single
+
+    0.0376
+
+
+temp_avg_metric =
+
+  single
+
+    0.0438
+
+
+temp_avg_metric =
+
+  single
+
+    0.0469
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0118
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0156
+
+
+temp_avg_metric =
+
+  single
+
+    0.0176
+
+
+temp_avg_metric =
+
+  single
+
+    0.0207
+
+
+temp_avg_metric =
+
+  single
+
+    0.0219
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0229
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0118
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0167
+
+
+temp_avg_metric =
+
+  single
+
+    0.0193
+
+
+temp_avg_metric =
+
+  single
+
+    0.0229
+
+
+temp_avg_metric =
+
+  single
+
+    0.0307
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0395
+
+
+temp_avg_metric =
+
+  single
+
+    0.0416
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0118
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0167
+
+
+temp_avg_metric =
+
+  single
+
+    0.0193
+
+
+temp_avg_metric =
+
+  single
+
+    0.0229
+
+
+temp_avg_metric =
+
+  single
+
+    0.0307
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0421
+
+
+temp_avg_metric =
+
+  single
+
+    0.0456
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0118
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0167
+
+
+temp_avg_metric =
+
+  single
+
+    0.0193
+
+
+temp_avg_metric =
+
+  single
+
+    0.0229
+
+
+temp_avg_metric =
+
+  single
+
+    0.0319
+
+
+temp_avg_metric =
+
+  single
+
+    0.0366
+
+
+temp_avg_metric =
+
+  single
+
+    0.0427
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0118
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0167
+
+
+temp_avg_metric =
+
+  single
+
+    0.0193
+
+
+temp_avg_metric =
+
+  single
+
+    0.0229
+
+
+temp_avg_metric =
+
+  single
+
+    0.0319
+
+
+temp_avg_metric =
+
+  single
+
+    0.0366
+
+
+temp_avg_metric =
+
+  single
+
+    0.0427
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0118
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0167
+
+
+temp_avg_metric =
+
+  single
+
+    0.0193
+
+
+temp_avg_metric =
+
+  single
+
+    0.0229
+
+
+temp_avg_metric =
+
+  single
+
+    0.0319
+
+
+temp_avg_metric =
+
+  single
+
+    0.0366
+
+
+temp_avg_metric =
+
+  single
+
+    0.0427
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0118
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0167
+
+
+temp_avg_metric =
+
+  single
+
+    0.0193
+
+
+temp_avg_metric =
+
+  single
+
+    0.0229
+
+
+temp_avg_metric =
+
+  single
+
+    0.0319
+
+
+temp_avg_metric =
+
+  single
+
+    0.0366
+
+
+temp_avg_metric =
+
+  single
+
+    0.0427
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0118
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0167
+
+
+temp_avg_metric =
+
+  single
+
+    0.0193
+
+
+temp_avg_metric =
+
+  single
+
+    0.0229
+
+
+temp_avg_metric =
+
+  single
+
+    0.0319
+
+
+temp_avg_metric =
+
+  single
+
+    0.0366
+
+
+temp_avg_metric =
+
+  single
+
+    0.0427
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0118
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0167
+
+
+temp_avg_metric =
+
+  single
+
+    0.0193
+
+
+temp_avg_metric =
+
+  single
+
+    0.0229
+
+
+temp_avg_metric =
+
+  single
+
+    0.0319
+
+
+temp_avg_metric =
+
+  single
+
+    0.0366
+
+
+temp_avg_metric =
+
+  single
+
+    0.0427
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0118
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0167
+
+
+temp_avg_metric =
+
+  single
+
+    0.0193
+
+
+temp_avg_metric =
+
+  single
+
+    0.0229
+
+
+temp_avg_metric =
+
+  single
+
+    0.0319
+
+
+temp_avg_metric =
+
+  single
+
+    0.0366
+
+
+temp_avg_metric =
+
+  single
+
+    0.0427
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0132
+
+
+temp_avg_metric =
+
+  single
+
+    0.0130
+
+
+temp_avg_metric =
+
+  single
+
+    0.0174
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0237
+
+
+temp_avg_metric =
+
+  single
+
+    0.0237
+
+
+temp_avg_metric =
+
+  single
+
+    0.0240
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0132
+
+
+temp_avg_metric =
+
+  single
+
+    0.0130
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0215
+
+
+temp_avg_metric =
+
+  single
+
+    0.0263
+
+
+temp_avg_metric =
+
+  single
+
+    0.0335
+
+
+temp_avg_metric =
+
+  single
+
+    0.0375
+
+
+temp_avg_metric =
+
+  single
+
+    0.0422
+
+
+temp_avg_metric =
+
+  single
+
+    0.0435
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0132
+
+
+temp_avg_metric =
+
+  single
+
+    0.0130
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0215
+
+
+temp_avg_metric =
+
+  single
+
+    0.0263
+
+
+temp_avg_metric =
+
+  single
+
+    0.0335
+
+
+temp_avg_metric =
+
+  single
+
+    0.0375
+
+
+temp_avg_metric =
+
+  single
+
+    0.0441
+
+
+temp_avg_metric =
+
+  single
+
+    0.0483
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0132
+
+
+temp_avg_metric =
+
+  single
+
+    0.0130
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0215
+
+
+temp_avg_metric =
+
+  single
+
+    0.0263
+
+
+temp_avg_metric =
+
+  single
+
+    0.0350
+
+
+temp_avg_metric =
+
+  single
+
+    0.0387
+
+
+temp_avg_metric =
+
+  single
+
+    0.0449
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0132
+
+
+temp_avg_metric =
+
+  single
+
+    0.0130
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0215
+
+
+temp_avg_metric =
+
+  single
+
+    0.0263
+
+
+temp_avg_metric =
+
+  single
+
+    0.0350
+
+
+temp_avg_metric =
+
+  single
+
+    0.0387
+
+
+temp_avg_metric =
+
+  single
+
+    0.0449
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0132
+
+
+temp_avg_metric =
+
+  single
+
+    0.0130
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0215
+
+
+temp_avg_metric =
+
+  single
+
+    0.0263
+
+
+temp_avg_metric =
+
+  single
+
+    0.0350
+
+
+temp_avg_metric =
+
+  single
+
+    0.0387
+
+
+temp_avg_metric =
+
+  single
+
+    0.0449
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0132
+
+
+temp_avg_metric =
+
+  single
+
+    0.0130
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0215
+
+
+temp_avg_metric =
+
+  single
+
+    0.0263
+
+
+temp_avg_metric =
+
+  single
+
+    0.0350
+
+
+temp_avg_metric =
+
+  single
+
+    0.0387
+
+
+temp_avg_metric =
+
+  single
+
+    0.0449
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0132
+
+
+temp_avg_metric =
+
+  single
+
+    0.0130
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0215
+
+
+temp_avg_metric =
+
+  single
+
+    0.0263
+
+
+temp_avg_metric =
+
+  single
+
+    0.0350
+
+
+temp_avg_metric =
+
+  single
+
+    0.0387
+
+
+temp_avg_metric =
+
+  single
+
+    0.0449
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0132
+
+
+temp_avg_metric =
+
+  single
+
+    0.0130
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0215
+
+
+temp_avg_metric =
+
+  single
+
+    0.0263
+
+
+temp_avg_metric =
+
+  single
+
+    0.0350
+
+
+temp_avg_metric =
+
+  single
+
+    0.0387
+
+
+temp_avg_metric =
+
+  single
+
+    0.0449
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0132
+
+
+temp_avg_metric =
+
+  single
+
+    0.0130
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0215
+
+
+temp_avg_metric =
+
+  single
+
+    0.0263
+
+
+temp_avg_metric =
+
+  single
+
+    0.0350
+
+
+temp_avg_metric =
+
+  single
+
+    0.0387
+
+
+temp_avg_metric =
+
+  single
+
+    0.0449
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0135
+
+
+temp_avg_metric =
+
+  single
+
+    0.0171
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0207
+
+
+temp_avg_metric =
+
+  single
+
+    0.0216
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0231
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0135
+
+
+temp_avg_metric =
+
+  single
+
+    0.0186
+
+
+temp_avg_metric =
+
+  single
+
+    0.0210
+
+
+temp_avg_metric =
+
+  single
+
+    0.0242
+
+
+temp_avg_metric =
+
+  single
+
+    0.0316
+
+
+temp_avg_metric =
+
+  single
+
+    0.0369
+
+
+temp_avg_metric =
+
+  single
+
+    0.0414
+
+
+temp_avg_metric =
+
+  single
+
+    0.0431
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0135
+
+
+temp_avg_metric =
+
+  single
+
+    0.0186
+
+
+temp_avg_metric =
+
+  single
+
+    0.0210
+
+
+temp_avg_metric =
+
+  single
+
+    0.0242
+
+
+temp_avg_metric =
+
+  single
+
+    0.0328
+
+
+temp_avg_metric =
+
+  single
+
+    0.0377
+
+
+temp_avg_metric =
+
+  single
+
+    0.0438
+
+
+temp_avg_metric =
+
+  single
+
+    0.0475
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0135
+
+
+temp_avg_metric =
+
+  single
+
+    0.0186
+
+
+temp_avg_metric =
+
+  single
+
+    0.0210
+
+
+temp_avg_metric =
+
+  single
+
+    0.0242
+
+
+temp_avg_metric =
+
+  single
+
+    0.0348
+
+
+temp_avg_metric =
+
+  single
+
+    0.0391
+
+
+temp_avg_metric =
+
+  single
+
+    0.0448
+
+
+temp_avg_metric =
+
+  single
+
+    0.0483
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0135
+
+
+temp_avg_metric =
+
+  single
+
+    0.0186
+
+
+temp_avg_metric =
+
+  single
+
+    0.0210
+
+
+temp_avg_metric =
+
+  single
+
+    0.0242
+
+
+temp_avg_metric =
+
+  single
+
+    0.0348
+
+
+temp_avg_metric =
+
+  single
+
+    0.0391
+
+
+temp_avg_metric =
+
+  single
+
+    0.0448
+
+
+temp_avg_metric =
+
+  single
+
+    0.0483
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0135
+
+
+temp_avg_metric =
+
+  single
+
+    0.0186
+
+
+temp_avg_metric =
+
+  single
+
+    0.0210
+
+
+temp_avg_metric =
+
+  single
+
+    0.0242
+
+
+temp_avg_metric =
+
+  single
+
+    0.0348
+
+
+temp_avg_metric =
+
+  single
+
+    0.0391
+
+
+temp_avg_metric =
+
+  single
+
+    0.0448
+
+
+temp_avg_metric =
+
+  single
+
+    0.0483
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0135
+
+
+temp_avg_metric =
+
+  single
+
+    0.0186
+
+
+temp_avg_metric =
+
+  single
+
+    0.0210
+
+
+temp_avg_metric =
+
+  single
+
+    0.0242
+
+
+temp_avg_metric =
+
+  single
+
+    0.0348
+
+
+temp_avg_metric =
+
+  single
+
+    0.0391
+
+
+temp_avg_metric =
+
+  single
+
+    0.0448
+
+
+temp_avg_metric =
+
+  single
+
+    0.0483
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0135
+
+
+temp_avg_metric =
+
+  single
+
+    0.0186
+
+
+temp_avg_metric =
+
+  single
+
+    0.0210
+
+
+temp_avg_metric =
+
+  single
+
+    0.0242
+
+
+temp_avg_metric =
+
+  single
+
+    0.0348
+
+
+temp_avg_metric =
+
+  single
+
+    0.0391
+
+
+temp_avg_metric =
+
+  single
+
+    0.0448
+
+
+temp_avg_metric =
+
+  single
+
+    0.0483
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0135
+
+
+temp_avg_metric =
+
+  single
+
+    0.0186
+
+
+temp_avg_metric =
+
+  single
+
+    0.0210
+
+
+temp_avg_metric =
+
+  single
+
+    0.0242
+
+
+temp_avg_metric =
+
+  single
+
+    0.0348
+
+
+temp_avg_metric =
+
+  single
+
+    0.0391
+
+
+temp_avg_metric =
+
+  single
+
+    0.0448
+
+
+temp_avg_metric =
+
+  single
+
+    0.0483
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0123
+
+
+temp_avg_metric =
+
+  single
+
+    0.0135
+
+
+temp_avg_metric =
+
+  single
+
+    0.0186
+
+
+temp_avg_metric =
+
+  single
+
+    0.0210
+
+
+temp_avg_metric =
+
+  single
+
+    0.0242
+
+
+temp_avg_metric =
+
+  single
+
+    0.0348
+
+
+temp_avg_metric =
+
+  single
+
+    0.0391
+
+
+temp_avg_metric =
+
+  single
+
+    0.0448
+
+
+temp_avg_metric =
+
+  single
+
+    0.0483
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0147
+
+
+temp_avg_metric =
+
+  single
+
+    0.0180
+
+
+temp_avg_metric =
+
+  single
+
+    0.0183
+
+
+temp_avg_metric =
+
+  single
+
+    0.0195
+
+
+temp_avg_metric =
+
+  single
+
+    0.0215
+
+
+temp_avg_metric =
+
+  single
+
+    0.0219
+
+
+temp_avg_metric =
+
+  single
+
+    0.0216
+
+
+temp_avg_metric =
+
+  single
+
+    0.0220
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0170
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0235
+
+
+temp_avg_metric =
+
+  single
+
+    0.0252
+
+
+temp_avg_metric =
+
+  single
+
+    0.0325
+
+
+temp_avg_metric =
+
+  single
+
+    0.0368
+
+
+temp_avg_metric =
+
+  single
+
+    0.0415
+
+
+temp_avg_metric =
+
+  single
+
+    0.0434
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0170
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0235
+
+
+temp_avg_metric =
+
+  single
+
+    0.0252
+
+
+temp_avg_metric =
+
+  single
+
+    0.0325
+
+
+temp_avg_metric =
+
+  single
+
+    0.0368
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0170
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0235
+
+
+temp_avg_metric =
+
+  single
+
+    0.0252
+
+
+temp_avg_metric =
+
+  single
+
+    0.0325
+
+
+temp_avg_metric =
+
+  single
+
+    0.0368
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0170
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0235
+
+
+temp_avg_metric =
+
+  single
+
+    0.0252
+
+
+temp_avg_metric =
+
+  single
+
+    0.0325
+
+
+temp_avg_metric =
+
+  single
+
+    0.0368
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0170
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0235
+
+
+temp_avg_metric =
+
+  single
+
+    0.0252
+
+
+temp_avg_metric =
+
+  single
+
+    0.0325
+
+
+temp_avg_metric =
+
+  single
+
+    0.0368
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0170
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0235
+
+
+temp_avg_metric =
+
+  single
+
+    0.0252
+
+
+temp_avg_metric =
+
+  single
+
+    0.0325
+
+
+temp_avg_metric =
+
+  single
+
+    0.0368
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0170
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0235
+
+
+temp_avg_metric =
+
+  single
+
+    0.0252
+
+
+temp_avg_metric =
+
+  single
+
+    0.0325
+
+
+temp_avg_metric =
+
+  single
+
+    0.0368
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0170
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0235
+
+
+temp_avg_metric =
+
+  single
+
+    0.0252
+
+
+temp_avg_metric =
+
+  single
+
+    0.0325
+
+
+temp_avg_metric =
+
+  single
+
+    0.0368
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0170
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0235
+
+
+temp_avg_metric =
+
+  single
+
+    0.0252
+
+
+temp_avg_metric =
+
+  single
+
+    0.0325
+
+
+temp_avg_metric =
+
+  single
+
+    0.0368
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0150
+
+
+temp_avg_metric =
+
+  single
+
+    0.0185
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0199
+
+
+temp_avg_metric =
+
+  single
+
+    0.0206
+
+
+temp_avg_metric =
+
+  single
+
+    0.0212
+
+
+temp_avg_metric =
+
+  single
+
+    0.0208
+
+
+temp_avg_metric =
+
+  single
+
+    0.0214
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0175
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0225
+
+
+temp_avg_metric =
+
+  single
+
+    0.0258
+
+
+temp_avg_metric =
+
+  single
+
+    0.0315
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0403
+
+
+temp_avg_metric =
+
+  single
+
+    0.0431
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0175
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0225
+
+
+temp_avg_metric =
+
+  single
+
+    0.0258
+
+
+temp_avg_metric =
+
+  single
+
+    0.0315
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0175
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0225
+
+
+temp_avg_metric =
+
+  single
+
+    0.0258
+
+
+temp_avg_metric =
+
+  single
+
+    0.0315
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0175
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0225
+
+
+temp_avg_metric =
+
+  single
+
+    0.0258
+
+
+temp_avg_metric =
+
+  single
+
+    0.0315
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0175
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0225
+
+
+temp_avg_metric =
+
+  single
+
+    0.0258
+
+
+temp_avg_metric =
+
+  single
+
+    0.0315
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0175
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0225
+
+
+temp_avg_metric =
+
+  single
+
+    0.0258
+
+
+temp_avg_metric =
+
+  single
+
+    0.0315
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0175
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0225
+
+
+temp_avg_metric =
+
+  single
+
+    0.0258
+
+
+temp_avg_metric =
+
+  single
+
+    0.0315
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0175
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0225
+
+
+temp_avg_metric =
+
+  single
+
+    0.0258
+
+
+temp_avg_metric =
+
+  single
+
+    0.0315
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0162
+
+
+temp_avg_metric =
+
+  single
+
+    0.0175
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0225
+
+
+temp_avg_metric =
+
+  single
+
+    0.0258
+
+
+temp_avg_metric =
+
+  single
+
+    0.0315
+
+
+temp_avg_metric =
+
+  single
+
+    0.0356
+
+
+temp_avg_metric =
+
+  single
+
+    0.0430
+
+
+temp_avg_metric =
+
+  single
+
+    0.0489
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0145
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0189
+
+
+temp_avg_metric =
+
+  single
+
+    0.0197
+
+
+temp_avg_metric =
+
+  single
+
+    0.0206
+
+
+temp_avg_metric =
+
+  single
+
+    0.0206
+
+
+temp_avg_metric =
+
+  single
+
+    0.0202
+
+
+temp_avg_metric =
+
+  single
+
+    0.0209
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0176
+
+
+temp_avg_metric =
+
+  single
+
+    0.0223
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0319
+
+
+temp_avg_metric =
+
+  single
+
+    0.0350
+
+
+temp_avg_metric =
+
+  single
+
+    0.0389
+
+
+temp_avg_metric =
+
+  single
+
+    0.0424
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0176
+
+
+temp_avg_metric =
+
+  single
+
+    0.0223
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0336
+
+
+temp_avg_metric =
+
+  single
+
+    0.0364
+
+
+temp_avg_metric =
+
+  single
+
+    0.0421
+
+
+temp_avg_metric =
+
+  single
+
+    0.0493
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0176
+
+
+temp_avg_metric =
+
+  single
+
+    0.0223
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0336
+
+
+temp_avg_metric =
+
+  single
+
+    0.0364
+
+
+temp_avg_metric =
+
+  single
+
+    0.0421
+
+
+temp_avg_metric =
+
+  single
+
+    0.0507
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0176
+
+
+temp_avg_metric =
+
+  single
+
+    0.0223
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0336
+
+
+temp_avg_metric =
+
+  single
+
+    0.0364
+
+
+temp_avg_metric =
+
+  single
+
+    0.0421
+
+
+temp_avg_metric =
+
+  single
+
+    0.0507
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0176
+
+
+temp_avg_metric =
+
+  single
+
+    0.0223
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0336
+
+
+temp_avg_metric =
+
+  single
+
+    0.0364
+
+
+temp_avg_metric =
+
+  single
+
+    0.0421
+
+
+temp_avg_metric =
+
+  single
+
+    0.0507
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0176
+
+
+temp_avg_metric =
+
+  single
+
+    0.0223
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0336
+
+
+temp_avg_metric =
+
+  single
+
+    0.0364
+
+
+temp_avg_metric =
+
+  single
+
+    0.0421
+
+
+temp_avg_metric =
+
+  single
+
+    0.0507
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0176
+
+
+temp_avg_metric =
+
+  single
+
+    0.0223
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0336
+
+
+temp_avg_metric =
+
+  single
+
+    0.0364
+
+
+temp_avg_metric =
+
+  single
+
+    0.0421
+
+
+temp_avg_metric =
+
+  single
+
+    0.0507
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0176
+
+
+temp_avg_metric =
+
+  single
+
+    0.0223
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0336
+
+
+temp_avg_metric =
+
+  single
+
+    0.0364
+
+
+temp_avg_metric =
+
+  single
+
+    0.0421
+
+
+temp_avg_metric =
+
+  single
+
+    0.0507
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0176
+
+
+temp_avg_metric =
+
+  single
+
+    0.0223
+
+
+temp_avg_metric =
+
+  single
+
+    0.0221
+
+
+temp_avg_metric =
+
+  single
+
+    0.0227
+
+
+temp_avg_metric =
+
+  single
+
+    0.0336
+
+
+temp_avg_metric =
+
+  single
+
+    0.0364
+
+
+temp_avg_metric =
+
+  single
+
+    0.0421
+
+
+temp_avg_metric =
+
+  single
+
+    0.0507
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0141
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0180
+
+
+temp_avg_metric =
+
+  single
+
+    0.0197
+
+
+temp_avg_metric =
+
+  single
+
+    0.0202
+
+
+temp_avg_metric =
+
+  single
+
+    0.0202
+
+
+temp_avg_metric =
+
+  single
+
+    0.0198
+
+
+temp_avg_metric =
+
+  single
+
+    0.0206
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0141
+
+
+temp_avg_metric =
+
+  single
+
+    0.0187
+
+
+temp_avg_metric =
+
+  single
+
+    0.0180
+
+
+temp_avg_metric =
+
+  single
+
+    0.0226
+
+
+temp_avg_metric =
+
+  single
+
+    0.0327
+
+
+temp_avg_metric =
+
+  single
+
+    0.0360
+
+
+temp_avg_metric =
+
+  single
+
+    0.0386
+
+
+temp_avg_metric =
+
+  single
+
+    0.0418
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0201
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0219
+
+
+temp_avg_metric =
+
+  single
+
+    0.0256
+
+
+temp_avg_metric =
+
+  single
+
+    0.0344
+
+
+temp_avg_metric =
+
+  single
+
+    0.0374
+
+
+temp_avg_metric =
+
+  single
+
+    0.0448
+
+
+temp_avg_metric =
+
+  single
+
+    0.0526
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0201
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0219
+
+
+temp_avg_metric =
+
+  single
+
+    0.0256
+
+
+temp_avg_metric =
+
+  single
+
+    0.0344
+
+
+temp_avg_metric =
+
+  single
+
+    0.0374
+
+
+temp_avg_metric =
+
+  single
+
+    0.0470
+
+
+temp_avg_metric =
+
+  single
+
+    0.0542
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0201
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0219
+
+
+temp_avg_metric =
+
+  single
+
+    0.0256
+
+
+temp_avg_metric =
+
+  single
+
+    0.0344
+
+
+temp_avg_metric =
+
+  single
+
+    0.0374
+
+
+temp_avg_metric =
+
+  single
+
+    0.0470
+
+
+temp_avg_metric =
+
+  single
+
+    0.0542
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0201
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0219
+
+
+temp_avg_metric =
+
+  single
+
+    0.0256
+
+
+temp_avg_metric =
+
+  single
+
+    0.0344
+
+
+temp_avg_metric =
+
+  single
+
+    0.0374
+
+
+temp_avg_metric =
+
+  single
+
+    0.0470
+
+
+temp_avg_metric =
+
+  single
+
+    0.0542
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0201
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0219
+
+
+temp_avg_metric =
+
+  single
+
+    0.0256
+
+
+temp_avg_metric =
+
+  single
+
+    0.0344
+
+
+temp_avg_metric =
+
+  single
+
+    0.0374
+
+
+temp_avg_metric =
+
+  single
+
+    0.0470
+
+
+temp_avg_metric =
+
+  single
+
+    0.0542
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0201
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0219
+
+
+temp_avg_metric =
+
+  single
+
+    0.0256
+
+
+temp_avg_metric =
+
+  single
+
+    0.0344
+
+
+temp_avg_metric =
+
+  single
+
+    0.0374
+
+
+temp_avg_metric =
+
+  single
+
+    0.0470
+
+
+temp_avg_metric =
+
+  single
+
+    0.0542
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0201
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0219
+
+
+temp_avg_metric =
+
+  single
+
+    0.0256
+
+
+temp_avg_metric =
+
+  single
+
+    0.0344
+
+
+temp_avg_metric =
+
+  single
+
+    0.0374
+
+
+temp_avg_metric =
+
+  single
+
+    0.0470
+
+
+temp_avg_metric =
+
+  single
+
+    0.0542
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0201
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0219
+
+
+temp_avg_metric =
+
+  single
+
+    0.0256
+
+
+temp_avg_metric =
+
+  single
+
+    0.0344
+
+
+temp_avg_metric =
+
+  single
+
+    0.0374
+
+
+temp_avg_metric =
+
+  single
+
+    0.0470
+
+
+temp_avg_metric =
+
+  single
+
+    0.0542
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0145
+
+
+temp_avg_metric =
+
+  single
+
+    0.0180
+
+
+temp_avg_metric =
+
+  single
+
+    0.0173
+
+
+temp_avg_metric =
+
+  single
+
+    0.0193
+
+
+temp_avg_metric =
+
+  single
+
+    0.0199
+
+
+temp_avg_metric =
+
+  single
+
+    0.0199
+
+
+temp_avg_metric =
+
+  single
+
+    0.0194
+
+
+temp_avg_metric =
+
+  single
+
+    0.0203
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0145
+
+
+temp_avg_metric =
+
+  single
+
+    0.0180
+
+
+temp_avg_metric =
+
+  single
+
+    0.0173
+
+
+temp_avg_metric =
+
+  single
+
+    0.0270
+
+
+temp_avg_metric =
+
+  single
+
+    0.0340
+
+
+temp_avg_metric =
+
+  single
+
+    0.0374
+
+
+temp_avg_metric =
+
+  single
+
+    0.0384
+
+
+temp_avg_metric =
+
+  single
+
+    0.0404
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0205
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0328
+
+
+temp_avg_metric =
+
+  single
+
+    0.0395
+
+
+temp_avg_metric =
+
+  single
+
+    0.0456
+
+
+temp_avg_metric =
+
+  single
+
+    0.0478
+
+
+temp_avg_metric =
+
+  single
+
+    0.0561
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0205
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0328
+
+
+temp_avg_metric =
+
+  single
+
+    0.0395
+
+
+temp_avg_metric =
+
+  single
+
+    0.0456
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+    0.0576
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0205
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0328
+
+
+temp_avg_metric =
+
+  single
+
+    0.0395
+
+
+temp_avg_metric =
+
+  single
+
+    0.0456
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+    0.0576
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0205
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0328
+
+
+temp_avg_metric =
+
+  single
+
+    0.0395
+
+
+temp_avg_metric =
+
+  single
+
+    0.0456
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+    0.0576
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0205
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0328
+
+
+temp_avg_metric =
+
+  single
+
+    0.0395
+
+
+temp_avg_metric =
+
+  single
+
+    0.0456
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+    0.0576
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0205
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0328
+
+
+temp_avg_metric =
+
+  single
+
+    0.0395
+
+
+temp_avg_metric =
+
+  single
+
+    0.0456
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+    0.0576
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0205
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0328
+
+
+temp_avg_metric =
+
+  single
+
+    0.0395
+
+
+temp_avg_metric =
+
+  single
+
+    0.0456
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+    0.0576
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0134
+
+
+temp_avg_metric =
+
+  single
+
+    0.0205
+
+
+temp_avg_metric =
+
+  single
+
+    0.0228
+
+
+temp_avg_metric =
+
+  single
+
+    0.0218
+
+
+temp_avg_metric =
+
+  single
+
+    0.0328
+
+
+temp_avg_metric =
+
+  single
+
+    0.0395
+
+
+temp_avg_metric =
+
+  single
+
+    0.0456
+
+
+temp_avg_metric =
+
+  single
+
+    0.0500
+
+
+temp_avg_metric =
+
+  single
+
+    0.0576
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0149
+
+
+temp_avg_metric =
+
+  single
+
+    0.0191
+
+
+temp_avg_metric =
+
+  single
+
+    0.0181
+
+
+temp_avg_metric =
+
+  single
+
+    0.0204
+
+
+temp_avg_metric =
+
+  single
+
+    0.0209
+
+
+temp_avg_metric =
+
+  single
+
+    0.0209
+
+
+temp_avg_metric =
+
+  single
+
+    0.0203
+
+
+temp_avg_metric =
+
+  single
+
+    0.0203
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0149
+
+
+temp_avg_metric =
+
+  single
+
+    0.0191
+
+
+temp_avg_metric =
+
+  single
+
+    0.0181
+
+
+temp_avg_metric =
+
+  single
+
+    0.0288
+
+
+temp_avg_metric =
+
+  single
+
+    0.0359
+
+
+temp_avg_metric =
+
+  single
+
+    0.0393
+
+
+temp_avg_metric =
+
+  single
+
+    0.0402
+
+
+temp_avg_metric =
+
+  single
+
+    0.0418
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0149
+
+
+temp_avg_metric =
+
+  single
+
+    0.0191
+
+
+temp_avg_metric =
+
+  single
+
+    0.0181
+
+
+temp_avg_metric =
+
+  single
+
+    0.0334
+
+
+temp_avg_metric =
+
+  single
+
+    0.0408
+
+
+temp_avg_metric =
+
+  single
+
+    0.0432
+
+
+temp_avg_metric =
+
+  single
+
+    0.0462
+
+
+temp_avg_metric =
+
+  single
+
+    0.0549
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0149
+
+
+temp_avg_metric =
+
+  single
+
+    0.0191
+
+
+temp_avg_metric =
+
+  single
+
+    0.0181
+
+
+temp_avg_metric =
+
+  single
+
+    0.0334
+
+
+temp_avg_metric =
+
+  single
+
+    0.0443
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+    0.0509
+
+
+temp_avg_metric =
+
+  single
+
+    0.0584
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0149
+
+
+temp_avg_metric =
+
+  single
+
+    0.0191
+
+
+temp_avg_metric =
+
+  single
+
+    0.0181
+
+
+temp_avg_metric =
+
+  single
+
+    0.0334
+
+
+temp_avg_metric =
+
+  single
+
+    0.0443
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+    0.0509
+
+
+temp_avg_metric =
+
+  single
+
+    0.0584
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0149
+
+
+temp_avg_metric =
+
+  single
+
+    0.0191
+
+
+temp_avg_metric =
+
+  single
+
+    0.0181
+
+
+temp_avg_metric =
+
+  single
+
+    0.0334
+
+
+temp_avg_metric =
+
+  single
+
+    0.0443
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+    0.0509
+
+
+temp_avg_metric =
+
+  single
+
+    0.0584
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0149
+
+
+temp_avg_metric =
+
+  single
+
+    0.0191
+
+
+temp_avg_metric =
+
+  single
+
+    0.0181
+
+
+temp_avg_metric =
+
+  single
+
+    0.0334
+
+
+temp_avg_metric =
+
+  single
+
+    0.0443
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+    0.0509
+
+
+temp_avg_metric =
+
+  single
+
+    0.0584
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0149
+
+
+temp_avg_metric =
+
+  single
+
+    0.0191
+
+
+temp_avg_metric =
+
+  single
+
+    0.0181
+
+
+temp_avg_metric =
+
+  single
+
+    0.0334
+
+
+temp_avg_metric =
+
+  single
+
+    0.0443
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+    0.0509
+
+
+temp_avg_metric =
+
+  single
+
+    0.0584
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0149
+
+
+temp_avg_metric =
+
+  single
+
+    0.0191
+
+
+temp_avg_metric =
+
+  single
+
+    0.0181
+
+
+temp_avg_metric =
+
+  single
+
+    0.0334
+
+
+temp_avg_metric =
+
+  single
+
+    0.0443
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+    0.0509
+
+
+temp_avg_metric =
+
+  single
+
+    0.0584
+
+
+temp_avg_metric =
+
+  single
+
+   NaN
+
+
+temp_avg_metric =
+
+  single
+
+    0.0152
+
+
+temp_avg_metric =
+
+  single
+
+    0.0149
+
+
+temp_avg_metric =
+
+  single
+
+    0.0191
+
+
+temp_avg_metric =
+
+  single
+
+    0.0181
+
+
+temp_avg_metric =
+
+  single
+
+    0.0334
+
+
+temp_avg_metric =
+
+  single
+
+    0.0443
+
+
+temp_avg_metric =
+
+  single
+
+    0.0461
+
+
+temp_avg_metric =
+
+  single
+
+    0.0509
+
+
+temp_avg_metric =
+
+  single
+
+    0.0584
+
+BONUS
+Best Detection Threshold: 
+   500
+
+Best Matching Threshold: 
+     4
+
+Best Matching Ratio: 
+     1
+
+Features Matched: 
+   217
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clc; clear all; close all;
+
+%{
+Matt Boler
+Fundamentals of Nav and Guidance
+HW2
+%}
+
+%% Problem 1
+p1_image = rgb2gray(imread('test-image.jpg'));
+thresholds = linspace(500, 5000);
+detections = zeros(size(thresholds));
+
+for i = 1:size(thresholds,2)
+    I = detectSURFFeatures(p1_image, 'MetricThreshold', thresholds(i));
+    detections(1,i) = size(I,1);
+    clear I;
+end
+
+figure(1)
+plot(thresholds, detections);
+title("Number of Features Detected vs Metric Threshold");
+xlabel("Metric Threshold");
+ylabel("Features Detected");
+
+%% Problem 2
+p2_im1 = rgb2gray(imread('Image_t0.jpg'));
+p2_im2 = rgb2gray(imread('Image_t1.jpg'));
+
+pts1 = detectSURFFeatures(p2_im1);
+[f1, vpts1] = extractFeatures(p2_im1, pts1);
+
+pts2 = detectSURFFeatures(p2_im2);
+[f2, vpts2] = extractFeatures(p2_im2, pts2);
+
+thresholds = linspace(1, 50, 1000);
+ratios = linspace(0.01,1);
+
+matches_1 = zeros(size(thresholds));
+
+for i = 1:size(thresholds, 2)
+    idxPairs = matchFeatures(f1, f2, 'Unique', true, 'MatchThreshold', thresholds(i));
+    matches_1(1,i) = size(vpts1(idxPairs(:,1)), 1);
+end
+
+figure(2)
+plot(thresholds, matches_1);
+title("Number of Features Matched vs Match Threshold");
+xlabel("Match Threshold");
+ylabel("Features Matched");
+
+matches_2 = zeros(size(matches_1));
+
+for i = 1:size(ratios, 2)
+   idxPairs = matchFeatures(f1, f2, 'Unique', true, 'MaxRatio', ratios(i));
+   matches_2(1,i) = size(vpts1(idxPairs(:,1)),1);
+end
+
+figure(3)
+plot(thresholds, matches_2);
+title("Number of Features Matched vs Max Ratio");
+xlabel("Max Ratio");
+ylabel("Features Matched");
+
+%% Problem 3
+
+p3_im1 = rgb2gray(imread('reference_map.jpg'));
+p3_im2 = rgb2gray(imread('img_132.png'));
+
+max_features_matched = -1;
+best_det_thresh = -1;
+best_match_thresh = -1;
+best_match_ratio = -1;
+
+det_thresholds = linspace(500, 2000, 10);
+match_thresholds = linspace(1, 10, 10);
+match_ratios = linspace(0.01,1, 10);
+
+for i = 1:size(det_thresholds, 2)
+    det_thresh = det_thresholds(i);
+    pts1 = detectSURFFeatures(p3_im1, 'MetricThreshold', det_thresh);
+    [f1, vpts1] = extractFeatures(p3_im1, pts1);
+    
+    pts2 = detectSURFFeatures(p3_im2, 'MetricThreshold', det_thresh);
+    [f2, vpts2] = extractFeatures(p3_im2, pts2);
+    
+    for j = 1:size(match_thresholds, 2)
+        match_thresh = match_thresholds(j);
+        for k = 1:size(match_ratios, 2)
+            match_ratio = match_ratios(k);
+            
+            % Test parameters
+            idxPairs = matchFeatures(f1, f2, 'Unique', true, 'MatchThreshold', match_thresh, 'MaxRatio', match_ratio);
+            temp_matches = size(vpts1(idxPairs(:,1)), 1);
+            
+            if temp_matches > max_features_matched
+               max_features_matched  = temp_matches;
+               best_det_thresh = det_thresh;
+               best_match_thresh = match_thresh;
+               best_match_ratio = match_ratio;
+            end
+            
+        end
+    end
+end
+
+disp("Best Detection Threshold: ")
+disp(best_det_thresh)
+disp("Best Matching Threshold: ")
+disp(best_match_thresh)
+disp("Best Matching Ratio: ")
+disp(best_match_ratio)
+disp("Features Matched: ")
+disp(max_features_matched)
+
+%% Bonus
+
+p3_im1 = rgb2gray(imread('Image_t0.jpg'));
+p3_im2 = rgb2gray(imread('Image_t1.jpg'));
+
+max_features_matched = -1;
+best_det_thresh = -1;
+best_match_thresh = -1;
+best_match_ratio = -1;
+
+det_thresholds = linspace(500, 2000, 10);
+match_thresholds = linspace(1, 10, 10);
+match_ratios = linspace(0.01,1, 10);
+
+for i = 1:size(det_thresholds, 2)
+    det_thresh = det_thresholds(i);
+    pts1 = detectSURFFeatures(p3_im1, 'MetricThreshold', det_thresh);
+    [f1, vpts1] = extractFeatures(p3_im1, pts1);
+    
+    pts2 = detectSURFFeatures(p3_im2, 'MetricThreshold', det_thresh);
+    [f2, vpts2] = extractFeatures(p3_im2, pts2);
+    
+    for j = 1:size(match_thresholds, 2)
+        match_thresh = match_thresholds(j);
+        for k = 1:size(match_ratios, 2)
+            match_ratio = match_ratios(k);
+            
+            % Test parameters
+            [idxPairs, metric] = matchFeatures(f1, f2, 'Unique', true, 'MatchThreshold', match_thresh, 'MaxRatio', match_ratio);
+            temp_matches = size(vpts1(idxPairs(:,1)), 1);
+            temp_avg_metric = sum(metric) / temp_matches
+            
+            if temp_matches > max_features_matched
+               max_features_matched  = temp_matches;
+               best_det_thresh = det_thresh;
+               best_match_thresh = match_thresh;
+               best_match_ratio = match_ratio;
+            end
+            
+        end
+    end
+end
+
+disp("BONUS")
+
+disp("Best Detection Threshold: ")
+disp(best_det_thresh)
+disp("Best Matching Threshold: ")
+disp(best_match_thresh)
+disp("Best Matching Ratio: ")
+disp(best_match_ratio)
+disp("Features Matched: ")
+disp(max_features_matched)
+
+
+
+##### SOURCE END #####
+--></body></html>

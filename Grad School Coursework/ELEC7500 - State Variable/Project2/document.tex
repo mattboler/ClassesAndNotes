@@ -1,0 +1,60 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{.}
+
+%opening
+\title{ELEC 7500 Project 2}
+\author{Matthew Boler}
+
+\begin{document}
+
+\maketitle
+
+\section{Linear System Stability}
+
+\section{Stable and Unstable Subspaces}
+
+\section{Analysis of Nonlinear System Stability}
+
+\section{Controllable and Stabilizable Properties}
+
+Consider the model $\dot{x} = \mathbf{A}x + \mathbf{B}u$, where
+
+\begin{align*}
+	\mathbf{A} &= \begin{bmatrix}
+	1 & 0 & 0 & 0 \\
+	0 & -2 & 0 & 0 \\
+	0 & 0 & 3 & 0 \\
+	0 & 0 & 0 -4
+	\end{bmatrix}
+\end{align*}
+
+\section{State Feedback}
+
+Consider the model from the previous section.
+Design a state feedback controller $u = -\mathbf{K}x$ so the closed loop system is asymptotically stable.
+Can the closed loop eigenvalues be freely selected?
+Describe the constraints on the choice of eigenvalues and the impact on the gain matrix $\mathbf{K}$.
+
+\section{Controllability, revisited}
+
+Consider the model $\dot{x} = \mathbf{A}x + \mathbf{B}u$, where
+\begin{align*}
+	\mathbf{A} &= \begin{bmatrix}
+	-1 & 0 \\
+	0 & 1
+	\end{bmatrix} \\
+	\mathbf{B} &= \begin{bmatrix}
+	0 \\
+	1
+	\end{bmatrix} \\
+	x(0) &= \begin{bmatrix}
+	0 \\
+	1
+	\end{bmatrix}
+\end{align*}
+Find an input function $u(t)$ that drives the state from $x(0)$ to the origin at $t=1$.
+Verify the solution either analytically or by simulation.
+
+\end{document}

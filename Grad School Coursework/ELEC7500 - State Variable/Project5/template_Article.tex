@@ -1,0 +1,93 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{.}
+%opening
+\title{ELEC7500 Project 5}
+\author{Matthew Boler}
+
+\begin{document}
+
+\maketitle
+
+\section{Modeling}
+
+Our task is to analyze and design a control system for the inverted pendulum.
+The variables and parameters are given in Table \ref{table:variables}.
+
+\begin{table}[h]
+\begin{center}
+	\begin{tabular}{| l | l | l |}
+		\hline
+		Symbol & Description & Value \\
+		\hline
+		$m$ & Your body mass & $80$kg \\
+		$l$ & Length of pendulum & $0.5$m \\
+		$M$ & Mass of cart & $45$kg \\
+		$H$ & Cart rolling friction coefficient & $4.5\frac{Ns}{m}$ \\
+		$g$ & Gravitational constant & $9.8\frac{m}{s^2}$ \\
+		$\theta$ & Pendulum angle & varies \\
+		$x$ & Cart position & varies \\
+		$F$ & Force exerted on cart & varies\\
+		\hline
+	\end{tabular} \\
+
+\end{center}
+\caption{System variables and parameters}
+\label{table:variables}
+\end{table}
+
+The dynamics of the system are given by Equations \ref{eq:stateeq1} and \ref{eq:stateeq2}.
+
+\begin{equation}
+	\ddot{x} \cos(\theta) + l\ddot{\theta} - g\sin(\theta) = 0 \label{eq:stateeq1}
+\end{equation}
+
+\begin{equation}
+	(M + m)\ddot{x} + ml\ddot{\theta}\cos(\theta) - ml\dot{\theta}^2\sin(\theta) = F - H\dot{x} \label{eq:stateeq2}
+\end{equation}
+
+We define the system state to be 
+\begin{align*}
+\textbf{z} = \begin{bmatrix}
+\theta \\
+\dot{\theta} \\
+x \\
+\dot{x}
+\end{bmatrix}
+\end{align*}
+with the system input $u = F$. We rewrite the dynamic equations in state-variable form
+
+\begin{align*}
+	\dot{\mathbf{z}} &= f(\mathbf{z}, u)
+\end{align*}
+
+\section{Equilibrium State}
+
+\section{Linearization}
+
+\section{State Stability}
+
+\section{Transfer Function}
+
+\section{Other Properties}
+
+\section{State Feedback}
+
+\section{State Estimation}
+
+\section{Computer Simulations}
+
+\subsection{Linear Model with State Feedback}
+
+\subsection{Linear Model with Estimated State Feedback}
+
+\subsection{Nonlinear Model with Linear State Feedback}
+
+\subsection{Nonlinear Model with Estimated State Feedback}
+
+\section{Revisiting the Separation Principle}
+
+
+
+\end{document}
