@@ -1,0 +1,21 @@
+function [ y ] = enhaceEdges( image, M, S )
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
+
+[height, width] = size(image);
+
+ker_v = [1 2 1; 0 0 0; -1 -2 -1];
+ker_h = ker_v';
+
+sm = conv2(image, ker_v, 'same');
+sn = conv2(image, ker_h, 'same');
+
+grad_image = sqrt(sm.^2 + sn.^2);
+
+filter = ones(M, M) ./ (M*M);
+sa = conv2(grad_image, filter, 'same');
+
+w = exp( -sa ./ S);
+
+end
+
