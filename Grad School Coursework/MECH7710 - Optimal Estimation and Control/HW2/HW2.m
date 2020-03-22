@@ -222,8 +222,6 @@ state_variance = recursive_P(1,:) + recursive_P(2,:);
 estimate_variance = state_variance + R;
 estimate_std = sqrt(estimate_variance);
 
-% TODO: THEORETICAL STDEV
-
 figure(3)
 plot(t, recursive_X(1,:), t, recursive_X(2,:), t, errors, t, estimate_std, 'r-', t, -estimate_std, 'r-');
 title("Recursive Least Squares")
@@ -248,15 +246,114 @@ vector each time. Compute the mean and standard deviation of your parameter
 estimates. Compare the computed values of the parameter statistics with those
 predicted by the theory based on the known value of the noise statistics.
 d) Now use sigma between 0.1 and 1.0 and repeat parts b and c.
-e) What can you
+e) What can you conclude about using least squares for sys id with large amounts of
+noise?
 %}
+clear all;
 
 numd = 0.25*[1 -0.8];
 dend = [1 -1.9 0.95];
+true_tf = tf(numd, dend, 1);
 u = randn(1000,1);
 y = dlsim(numd,dend,u);
 sigma = 0.01;
 Y = y + sigma * randn(1000,1);
+
+
+% a.
+% From difference equation:
+% y(n) = a * y(n-1) + b * y(n-2) + c * u(n-1) + d * u(n-2)
+Y_ls = Y(3:end);
+H = [Y(2:end-1), Y(1:end-2), u(2:end-1), u(1:end-2)];
+
+%b.
+est_coeff_b = H \ Y_ls;
+est_n = est_coeff_b(3:4)';
+est_d = [1, -est_coeff_b(1:2)'];
+est_tf = tf(est_n, est_d, 1);
+est_y = dlsim(est_n, est_d, u);
+
+% Plot bode of ID and simulated TF
+% Really good fit!
+figure(4)
+bode(true_tf);
+hold on;
+bode(est_tf);
+
+% Plot Y and y on the same plot
+% Really good fit, SNR 100:1
+figure(5)
+plot(1:1000, Y, 1:1000, est_y)
+title("Measured vs Estimated")
+legend("Measured", "Estimated")
+
+% c. Repeat 10x with sigma = 0.01;
+a_hist = [];
+b_hist = [];
+c_hist = [];
+d_hist = [];
+
+for i = 1:10
+    u = randn(1000,1);
+    y = dlsim(numd,dend,u);
+    sigma = 0.01;
+    Y = y + sigma * randn(1000,1);
+    Y_ls = Y(3:end);
+    H = [Y(2:end-1), Y(1:end-2), u(2:end-1), u(1:end-2)];
+    est_coeff = H \ Y_ls;
+    a_hist(i) = -est_coeff(1);
+    b_hist(i) = -est_coeff(2);
+    c_hist(i) = est_coeff(3);
+    d_hist(i) = est_coeff(4);
+end
+
+% d. Repeat with sigma = 0.1, 1
+
+sigmas = [0.01, 0.1, 1.0];
+a_hist = zeros(10, length(sigmas));
+b_hist = zeros(size(a_hist));
+c_hist = zeros(size(a_hist));
+d_hist = zeros(size(a_hist));
+
+for i = 1:length(sigmas)
+    sigma = sigmas(i);
+    for j = 1:10
+        u = randn(1000,1);
+        y = dlsim(numd,dend,u);
+        Y = y + sigma * randn(1000,1);
+        
+        Y_ls = Y(3:end);
+        H = [Y(2:end-1), Y(1:end-2), u(2:end-1), u(1:end-2)];
+        est_coeff = H \ Y_ls;
+        
+        a_hist(j, i) = -est_coeff(1);
+        b_hist(j, i) = -est_coeff(2);
+        c_hist(j, i) = est_coeff(3);
+        d_hist(j, i) = est_coeff(4);
+    end
+    disp(['Stats for 10x, sigma = ', string(sigma)])
+    disp(['a_mean: ', string(mean(a_hist(:,i)))]);
+    disp(['b_mean: ', string(mean(b_hist(:,i)))]);
+    disp(['c_mean: ', string(mean(c_hist(:,i)))]);
+    disp(['d_mean: ', string(mean(d_hist(:,i)))]);
+    
+    disp(['a_std: ', string(std(a_hist(:,i)))]);
+    disp(['b_std: ', string(std(b_hist(:,i)))]);
+    disp(['c_std: ', string(std(c_hist(:,i)))]);
+    disp(['d_std: ', string(std(d_hist(:,i)))]);
+    
+end
+
+% Sigma = 0.01: Errors are pretty close to 0, stds are around 1/n *
+% noise_sigma
+
+% Sigma = 0.1: Errors are still pretty small, stds closer to noise_sigma
+
+% Sigma = 1: Errors huge, std is basically equal to noise_sigma
+
+% IMPLIES we are fitting to the noise instead of the model!
+
+
 
 %% Problem 5
 %{
