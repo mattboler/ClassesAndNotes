@@ -6,6 +6,7 @@
 \usepackage{algorithm2e}
 \usepackage{fancyhdr}
 \usepackage{extramarks}
+\usepackage{float}
 
 %
 % Homework Details
@@ -127,22 +128,18 @@
     Find a recursive formula for calculating the mean at time $t$.
 
     \textbf{Solution}
+
     Working through a series of examples,
     \begin{align*}
         \overline{y}_1 &= y_1 \\
         \overline{y}_2 &= \frac{1}{2}(\overline{y}_1 + y_2) \\
         \overline{y}_3 &= \frac{1}{3}(2\overline{y}_2 + y_3)
     \end{align*}
-    the formula
-    \begin{align*}
-        \overline{y}_t &= \frac{1}{t}[(t-1)\overline{y}_{t-1} + y_t]
-    \end{align*}
-    becomes apparent.
-
-    
+    the formula $\overline{y}_t = \frac{1}{t}[(t-1)\overline{y}_{t-1} + y_t]$ becomes apparent.
 
 \end{homeworkProblem}
 
+\newpage
 \begin{homeworkProblem}
     Consider the continuous system blow
     \begin{enumerate}
@@ -162,227 +159,264 @@
     \end{align*}
 
     \textbf{Solution}
+    Rewriting our system in a convenient form
+    \begin{align*}
+        \dot{x} &= Fx + Lw \\
+        y &= Hx + v
+    \end{align*}
+
+    The differential equation describing the error variance is the following Riccati equation
+    \begin{align*}
+        \dot{P} &= FP + PF^T + LQL^T - PH^TR^{-1}HP
+    \end{align*}
+    as these are scalars, we simplify
+    \begin{align*}
+        \dot{P} &= 2FP + L^2Q - P^2H^2R^{-1} \\
+        &= 2P + Q - P^2R^{-1}
+    \end{align*}
+    $P_{ss}$ occurs when $\dot{P} = 0$.
+    Solving, we find
+    \begin{align*}
+        0 &= P_{ss}^2 - 2RP_{ss} - QR \\
+        P_{ss} &= R \pm \sqrt{R(Q+R)} 
+    \end{align*}
+    Because $P$ must be positive, our steady-state error covariance $P_{ss} = R + \sqrt{R(Q+R)}$.
+
+    The steady-state Kalman gain is given by
+    \begin{align*}
+        K_{ss} &= P_{ss} H^T R^{-1} \\
+        &= (R + \sqrt{RQ + R^2}) R^{-1}  \\
+        &= (2R + \sqrt{RQ}) R^{-1} \\
+        &= 2 + \sqrt{\frac{Q}{R}}
+    \end{align*}
+
+    Our open-loop estimator eigenvalues are given by the eigenvalue of $F$, which is just $1$.
+
+    Out close-loop estimator eigenvalues are given by the eigenvalue of $F - KH$.
+    In this scalar case, the eigenvalue is equal to the value of $F - KH$.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width = 8cm, angle=270]{P2.jpg}
+        \caption{Possible closed-loop eigenvalues}
+        \label{}
+    \end{figure}
+
+    Because the steady-state error covariance represents the minimum of a quadratic function, it is the lower bound of the Kalman gain and all possible eigenvalues lay in $\lambda \in ( - \infty, 1 - K_{ss}]$.
+    Clearly, the eigenvalue corresponding to the steady-state Kalman gain is the slowest, while eigenvalues corresponding to higher covariances are faster.
+
+    
+    
+\end{homeworkProblem}
+
+\newpage
+\begin{homeworkProblem}
+    Given the measurements shown in the table:
+    \begin{enumerate}
+        \item[a] Use least squares to estimate the slope and y-intercept of a line assuming the x values are the inputs and the y values are measurements that are corrupted by zero-mean Gaussian noise with a standard deviation of 0.2
+        \item[b] What is the expected error of the estimate?
+        \item[c] Use weighted least squares to calculate the estimates assuming the last measurement is twice as bad (1 $\sigma$) as the first two measurements.  
+    \end{enumerate}
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{c|c|c}
+            k & x & y \\
+            1 & 0 & 3 \\
+            2 & 1 & 2 \\
+            3 & 2 & 0
+        \end{tabular}
+    \end{table}
+
+    \textbf{Solution}
+
+    Since our system is $ y = ax + b$, our $H$ matrix is:
+    $\begin{bmatrix}
+        0 & 1 \\
+        1 & 1 \\
+        2 & 1
+    \end{bmatrix}$, our $Y$ matrix is 
+    $\begin{bmatrix}
+        3 \\
+        2 \\
+        0
+    \end{bmatrix}$, and our $X$ matrix is 
+    $\begin{bmatrix}
+        a \\
+        b
+    \end{bmatrix}$.
+
+    Our estimate of $X$ is then $(H^TH)^{-1}H^TY$, which gives us 
+    \begin{align*}
+        a &= -1.5 \\
+        b &= 3.1667
+    \end{align*}
+
+    The expected error of this estimate is 0, as the linear least squares estimator is unbiased.
+
+    If we assume that the last measurement is twice as bad as the first two, we construct the weighting matrix $W = \begin{bmatrix}
+        \frac{1}{0.2} & 0 & 0 \\
+        0 & \frac{1}{0.2} & 0 \\
+        0 & 0 & \frac{1}{0.4}
+    \end{bmatrix}$, and our new estimate of $X$ is $ (H^T W H)^{-1} H^T W Y $, which gives us
+    \begin{align*}
+        a &= -1.4286 \\
+        b &= 3.1429
+    \end{align*}
+
+
+
+\end{homeworkProblem}
+
+\newpage
+\begin{homeworkProblem}
+    A random number generator generates integers from 1 to 9 (inclusive). All outcomes are equally likely, and each integer is generated independently of any previous integer. Let $\Sigma$ denote the sum of two consecutively generated integers.
+
+    \begin{enumerate}
+        \item[a] Given $N_1 > 8$, what is the probability that $\Sigma$ is odd?
+        \item[b] Given $\Sigma > 10$, what is the probability that at least one of the integers is greater than 7?
+        \item[c] Using Bayes' rule, find the conditional probability that $\Sigma = 7$ given $\Sigma$ is odd.  
+    \end{enumerate}
+
+    \textbf{Solution}
+
+    Our sample space is represented by the table below.
+    \begin{table}[H]
+        \centering
+        \label{tb1}
+        \begin{tabular}{ccccccccc}
+            2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+            3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\
+            4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\
+            5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 \\
+            6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 \\
+            7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 \\
+            8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 \\
+            9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 \\
+            10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18
+        \end{tabular}
+    \end{table}
+
+    $N_1 > 8$ means $N_1 = 9$. If $N_2 \in {2, 4, 6, 8}$ then $\Sigma$ is odd; otherwise if $N_2 \in {1, 3, 5, 7, 9}$ then $\Sigma$ is even. Thus, $P(\Sigma \: odd \vert N_1 > 8) = \frac{4}{9}$.
+    \medskip
+
+    $\Sigma > 10$ removes the upper left corner and diagonal of the sample space, reducing the number of events by 45. Of the remaining 36, 11 involve generating a 7. Thus, $P(N_1 = 7 \: or \: N_2 = 7 \vert \Sigma > 10) = \frac{11}{36}$. 
+    \medskip
+
+    Using Bayes' rule we wish to find $P(\Sigma = 7 \vert \Sigma \: odd)$.
+    We need:
+    \begin{itemize}
+        \item $P(\Sigma \: odd) = \frac{40}{81}$
+        \item $P(\Sigma \: odd \vert \Sigma = 7) = 1$
+        \item $P(\Sigma = 7) = \frac{6}{81}$
+    \end{itemize}
+    From these we find $P(\Sigma = 7 \vert \Sigma \: odd) = P(\Sigma \: odd \vert \Sigma = 7) \frac{P(\Sigma = 7)}{P(\Sigma \: odd)} = 0.15$.
     
 
 \end{homeworkProblem}
 
+\newpage
 \begin{homeworkProblem}
-    Two random vectors $X_1$ and $X_2$ are uncorrelated if 
-    
+    Consider the linearized pendulum driven by a motor torque with a force disturbance. The system is sampled at 100Hz. The pendulum has an optical encoder with 360 counts/revolution to measure angular position. The motor has a tachometer that measures angular velocity with an accuracy of 0.2 deg/s (1 $\sigma$). However, the tachometer measurement has a bias that should be modeled as a markov process with a time constant of 10 seconds and a unit white noise input.
+
     \begin{align*}
-        E[(X_1 - \overline{X_1})(X_2 - \overline{X_2})] = 0
+        J\ddot{\theta} + b \dot{\theta} + mgl\theta &= \tau_m - F_dl \:\: where \:\: E[F_d] = \mu_d \:\: and \:\: E[F_dF_d^T] = \sigma_d^2
     \end{align*}
 
-    Show that:
     \begin{enumerate}
-        \item Independent random vectors are uncorrelated
-        \item Uncorrelated Gaussian random vectors are independent
+        \item[a] Find $A, B_u, B_w, C, D, Q, R$ 
+        \item[b] Find the first order approximation of $A_d$
+        \item[c] Calculate $Q_d$  
     \end{enumerate}
 
     \textbf{Solution}
-    If two random vectors are independent, then $f(x_1, x_2) = f(x_1)f(x_2)$.
-    From this we get 
+    We define
+    \begin{itemize}
+        \item $t_c = 10s$
+        \item $\beta$ is the tachometer bias
+        \item $dt = \frac{1}{100}s$
+    \end{itemize}
+
+    An additional note: no noise parameters are given for the encoder, so we assume perfect measurements (unrealistic but simple). 
+    We could assume that the true angle is uniformly distributed between clicks, in which case the variance would be $\frac{1}{12}(\frac{1}{360})^2$.
+
+    We want our system in the form
     \begin{align*}
-        E[X_1X_2] &= \sum \sum x_1 x_2 f(x_1) f(x_2) \\
-        &= \sum x_1 f(x_1) \sum x_2 f(x_2) \\
-        &= E[X_1]E[X_2]
+        \dot{x} = Ax + B_u u + B_w \omega \\
+        y = Cx + Du + \nu_s
     \end{align*}
-    Since $Cov(X_1, X_2) = E[X_1X_2] - E[X_1]E{X_2} = 0$, the vectors are uncorrelated.
 
-    If two gaussian random vectors are uncorrelated, then $\rho_{1,2} = 0$.
-    From this, the exponential term in the PDF takes the form $\exp(\alpha_1 X_1^2 + \alpha_2 X_2^2)$, which can clearly be written as a separable product of exponentials, and the vectors are thus independent.
-\end{homeworkProblem}
-
-\begin{homeworkProblem}
-    Consider a sequence created by throwing a pair of dice and summing the numbers, which are $[-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]$.
-    Call this $V_0(k)$.
-    \begin{enumerate}
-        \item[a] What is the PDF?
-        \item[b] What are the mean and variance?
-    \end{enumerate}
-    If we generate a new random sequence
+    Our state space model is as follows
     \begin{align*}
-        V_N(k+1) = (1-r)V_N(k) + rV_0(k),
-    \end{align*}
-    $V_N(k)$ is serially correlated.
-    \begin{enumerate}
-        \item[c] What are the steady-state mean and variance of this new sequence?
-        \item[d] What is the covariance function $R(k) = E[V_N(k)V_N(k-L)]$?
-        \item[e] Are there any practical constrains on $r$?
-    \end{enumerate}
-
-    \textbf{Solution}
-    
-    \begin{align*}
-        f(v_0) &= 
-        \frac{1}{6^2}
+        \frac{d}{dt}
         \begin{bmatrix}
-            1&2&3&4&5&6&5&4&3&2&1
-        \end{bmatrix} \in [-5,5] \\
-        E[v_0] &= 0 \\
-        \sigma_{v_0}^2 &= 5.832
-    \end{align*}
-
-    If we expand the sequence definition backwards in time a few steps, we find that it is described by the summation
-    \begin{align*}
-        V_n(k) = (1-r)^k V_0(0) + \sum_{i = 0}^{k - 1} r(1-r)^iV_0(i)
-    \end{align*}
-
-    Our $V_0(0)$ term goes to 0 as $k\rightarrow\inf$, and
-    \begin{align*}
-        E[ \sum_{i=0}^{k-1}r(1-r)^i V_0(i)] &= rE[V_0]\sum_{i=0}^{k-1}(1-r)^i \\
-        &= 0
-    \end{align*}
-
-    Performing the same expansion for $V_n(k)^2$, we get
-    
-    \begin{align*}
-        V_n(k)^2 = (1-r)^{2k}V_n(0)^k + \sum_{i=0}^{k-1}r^2(1-r)V_0(i)^2
-    \end{align*}
-
-    Again, our $V_0(0)$ term goes to 0, and
-    \begin{align*}
-        E[ \sum_{i=0}^{k-1} r^2(1-r)^{2i}V_0(i)^2] &= r^2 \sum_{i=0}^{k-1} (1-r)^{2i} E[V_0(i)^2] \\
-        &= [r^2 \sum_{i=0}^{k-1} (1-r)^{2i}] (\sigma_{v0}^2 - 0)
-    \end{align*}
-
-    From these,
-    \begin{align*}
-        \sigma_{vn}^2 &= E[V_n^2] - E[V_n]^2 \\
-        &= \sigma_{v0}^2 [r^2 \sum_{i=0}^{k-1} (1-r)^{2i}]
-    \end{align*}
-
-
-    To find $R(L)$ we'll start with a small example where $L=1$.
-    \begin{align*}
-        E[V_N(k)V_N(k-1)] &= E[ ((1-r)V_N(k-1) + rV_0(k-1)) * V_N(k-1) ] \\
-        &= E[ (1-r)V_N(k-1)^2 ] + E[ rV_0(k-1)V_N(k-1) ] \\
-        &= (1-r)E[V_N(k-1)^2]
-    \end{align*}
-    From this, we expand the general solution to $R(L) = (1-r)^L E[V_N(k-L)^2]$.
-    There's still some work to be done in exactly solving back to $V_N(1)$, but this gets the general idea that the sequence is less correlated with itself over larger time steps.
-    A practical constraint on $r$ is that $|r| \in [0,1]$, otherwise the sequence goes to infinity.
-
-\end{homeworkProblem}
-
-\begin{homeworkProblem}
-    A random variable $x$ has a PDF given by
-    \begin{align*}
-        f_X = \begin{cases}
-            0 & x < 0 \\
-            \frac{x}{2} & 0 \leq x < 2 \\
-            0 & x \geq 2
-        \end{cases}
-    \end{align*}
-    \begin{enumerate}
-        \item[a] What is the mean of $x$?
-        \item[b] What is the variance of $x$? 
-    \end{enumerate}
-
-    \textbf{Solution}
-
-    \begin{align*}
-        \mu_x &= \int_{0}^{2} x\frac{x}{2}dx \\
-        &= \frac{x^3}{6}|_0^2 \\
-        &= \frac{4}{3}
-    \end{align*}
-
-    \begin{align*}
-        \sigma_x^2 &= E[X^2] - E[X]^2 \\
-        &= \int_0^2x^2\frac{x}{2}dx - \frac{16}{9} \\
-        &= \frac{x^4}{8}|_0^2 - \frac{16}{9} \\
-        &= 2 - \frac{16}{9}
-    \end{align*}
-\end{homeworkProblem}
-
-\begin{homeworkProblem}
-    Consider a normally-distributed 2D vector $X$, with mean $0$ and 
-    \begin{align*}
-        P_X = \begin{bmatrix}
-            2 & 1 \\
-            1 & 4
+            \dot{\theta} \\
+            \theta \\
+            \beta \\
+            \mu_d
+        \end{bmatrix} &= \begin{bmatrix}
+            -\frac{b}{J} & -\frac{mgl}{J} & 0 & -\frac{l}{J} \\
+            1 & 0 & 0 & 0 \\
+            -\frac{1}{t_c} & 0 & 0 & 0 \\
+            0 & 0 & 0 & 0
+        \end{bmatrix} \begin{bmatrix}
+            \dot{\theta} \\
+            \theta \\
+            \beta \\
+            \mu_d
+        \end{bmatrix} + \begin{bmatrix}
+            \frac{1}{J} \\
+            0 \\
+            0 \\
+            0
+        \end{bmatrix} \tau_m + \begin{bmatrix}
+            -\frac{l}{J} & 0 \\
+            0 & 0 \\
+            0 & 1 \\
+            0 & 0 
+        \end{bmatrix} \begin{bmatrix}
+            \omega_{\tau} \\
+            \omega_{\beta}
+        \end{bmatrix} \\
+        \begin{bmatrix}
+            \dot{\theta} \\
+            \theta
+        \end{bmatrix} &= \begin{bmatrix}
+            1 & 0 & 1 & 0 \\
+            0 & 1 & 0 & 0
+        \end{bmatrix} \begin{bmatrix}
+            \dot{\theta} \\
+            \theta \\
+            \beta \\
+            \mu_d
+        \end{bmatrix} + \begin{bmatrix}
+            0
+        \end{bmatrix} \tau_m + 
+        \begin{bmatrix}
+            1 \\ 
+            0
+        \end{bmatrix} \nu_s \\
+        Q &= \begin{bmatrix}
+            \sigma_d^2 & 0 \\
+            0 & 1
+        \end{bmatrix} \\
+        R &= \begin{bmatrix}
+            0.04deg/s & 0 \\
+            0 & 0
         \end{bmatrix}
     \end{align*}
-    \begin{enumerate}
-        \item[a] Find the eigenvalues of $P_X$
-        \item[b] What are the principal axes?
-        \item[c] Plot the likelihood ellipses for $c = 0.25, 1, 1.5$
-        \item[d] What is the probability of finding $X$ inside each of these ellipses?   
-    \end{enumerate}
 
-    \textbf{Solution}
-    
-    \begin{Code}
-        [V, D] = eig(P_x); 
-        % Eigenvalues:
-        D = 1.5858      0
-            0           4.4142
-        % Principal axes:
-        V = -0.9239     0.3827
-            0.3827      0.9239
-    \end{Code}
-
-    We find our error ellipses via:
-    \begin{Code}
-        function [c] = error_ellipse(covariance, k)
-            theta = linspace(0, 2*pi, 100);
-            a = k*[cos(theta); sin(theta)];
-            [V, D] = eig(covariance);
-            A = D^(-1/2) * V;
-            A_inv = pin(A);
-            c = A_inv * a;
-        end
-    \end{Code}
-    %\includegraphics[]{error}
-
-    We expect these ellipses to contain $X$ with the following probabilities:
-
-    \begin{Code}
-        c = [0.25; 1; 1.5];
-        alpha = c .^ 2
-        P = chi2cdf(alpha, 2);
-    \end{Code}
-
+    The first-order approximation of $A_d$ is 
     \begin{align*}
-        C = 0.25 : P(X) = 0.0308 \\
-        C = 1.00 : P(X) = 0.3935 \\
-        C = 1.50 : P(X) = 0.6753
+        A_d \approx I + Adt
+    \end{align*}
+
+    Our $Q_d$ is 
+    \begin{align*}
+        Q_d = B_w  Q  B_w^T dt
     \end{align*}
 
 \end{homeworkProblem}
 
-\begin{homeworkProblem}
-    Given $x \sim N(0, \sigma_x^2)$ and $y = 2x^2$
-    \begin{enumerate}
-        \item[a] Find the PDF of $y$
-        \item[b] Draw the PDFs of $x$ and $y$ on the same plot for $\sigma_x^2 = 2.0$
-        \item[c] How is the density function changed by this transformation?
-        \item[d] Is $y$ a normal random variable?   
-    \end{enumerate}
-    
-    \textbf{Solution}
-    For an RV $X ~ N(0, \sigma_x^2)$ transformed as $Y = g(X) = 2X^2$, we slightly abuse the density transformation technique:
-    \begin{align*}
-        f_y(y) = |\frac{d}{dy} g^{-1}(y)| f_x(g^{-1}(y))
-    \end{align*}
 
-    To use this, $g$ must be invertible.
-    Instead we will handle it piecewise for $x < 0$ and $x > 0$.
 
-    \begin{align*}
-        g^{-1}(y) &= \pm sqrt(\frac{y}{2}) \\
-        | \frac{d}{dy}g^{-1}(y)| &= \frac{1}{2sqrt(2y)} \\
-        f_x(x) &= \frac{1}{sqrt(2 \pi \sigma_x^2)}exp( \frac{-1}{2} (\frac{x-\mu}{\sigma})^2 ) \\
-    \end{align*}
-
-    To handle our uninvertible transformation, we only performt the calculation for $x>0$ and double it to account for $x<0$ mapping to the same value as their positive equivalent.
-    \begin{align*}
-        f_y(y) &= 2 * |\frac{1}{2sqrt(2y)}| f_x(sqrt(\frac{y}{2})) \\
-        &= \frac{1}{2 \sigma_x sqrt(\pi y)}exp(\frac{-y}{4\sigma_x^2})
-    \end{align*}
-
-    %\includegraphics[]{p7.png}
-
-\end{homeworkProblem}
-    
 \end{document}
